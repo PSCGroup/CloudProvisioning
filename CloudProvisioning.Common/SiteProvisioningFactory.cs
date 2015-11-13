@@ -470,60 +470,83 @@ namespace CloudProvisioningWeb.Common
                 //If Site Collection (parent)
                 if (siteType == SiteType.SiteCollection)
                 {
-
-                    //Navigation Settings
-                    OfficeDevPnP.Core.Entities.AreaNavigationEntity settings = new OfficeDevPnP.Core.Entities.AreaNavigationEntity();
-                    settings.CurrentNavigation.ManagedNavigation = false;
-                    settings.GlobalNavigation.ShowPages = false;
-                    settings.GlobalNavigation.ShowSiblings = false;
-                    settings.GlobalNavigation.ShowSubsites = true;
-
-                    NavigationExtensions.UpdateNavigationSettings(web, settings);
-
-
-                    //Quick launch
-                    web.AddNavigationNode(web.Title, new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
-                    web.AddNavigationNode("Projects", new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
-                    AddListToQuickLaunch(ctx, web, "Shared Documents");
-                    AddListToQuickLaunch(ctx, web, "Internal Documents");
-                    web.Update();
+                    UpdateQuickLaunch(ctx, web, SiteType.SiteCollection);
+                    UpdateSecurity(ctx, web);
                 }
 
                 //Site (child)
                 else
                 {
-
-                    //Navigation settings
-                    NavigationExtensions.UpdateNavigationInheritance(web, true);
-
-                    //Quick launch
-                    web.AddNavigationNode(web.Title, new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
-                    AddListToQuickLaunch(ctx, web, "Shared Documents", web.Title);
-                    AddListToQuickLaunch(ctx, web, "Internal Documents", web.Title);
-                    AddListToQuickLaunch(ctx, web, "RAID Log", web.Title);
-                    AddListToQuickLaunch(ctx, web, "Internal Tasks", web.Title);
-                    AddListToQuickLaunch(ctx, web, "Calendar", web.Title);
-                    AddListToQuickLaunch(ctx, web, "Contacts", web.Title);
-
-                    web.Update();
+                    UpdateQuickLaunch(ctx, web, SiteType.Subsite);
 
                 }
             }
             
         }
 
+        private static void UpdateSecurity(ClientContext ctx, Web web)
+        {
+
+            Group pscOwners = web.SiteGroups.GetByName("PSC Owners");
+            Group pscMembers = web.SiteGroups.GetByName("PSC Members");
+            Group pscVisitors = web.SiteGroups.GetByName("PSC Visitors");
+
+            web.AssociateDefaultGroups(pscOwners, pscMembers, pscVisitors);
+            web.Update();
+            ctx.ExecuteQueryRetry();
+
+            
+        }
+
+        private static void UpdateQuickLaunch(ClientContext ctx, Web web, SiteType siteType)
+        {
+
+            ctx.Load(web, w => w.ParentWeb);
+
+            if (siteType == SiteType.SiteCollection)
+            {
+                web.DeleteAllNavigationNodes(OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+
+                //Quick launch
+                web.AddNavigationNode(web.Title, new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+                web.AddNavigationNode("Projects", new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+                AddListToQuickLaunch(ctx, web, "Shared Documents", web.Title);
+                AddListToQuickLaunch(ctx, web, "Calendar", web.Title);
+                AddListToQuickLaunch(ctx, web, "Contacts", web.Title);
+
+            }
+            else
+            {
+                //Navigation settings
+                NavigationExtensions.UpdateNavigationInheritance(web, true);
+
+                web.DeleteAllNavigationNodes(OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+
+                //Quick launch
+                web.AddNavigationNode(web.Title, new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+                AddListToQuickLaunch(ctx, web, "Shared Documents", web.Title);
+                AddListToQuickLaunch(ctx, web, "RAID Log", web.Title);
+                //AddListToQuickLaunch(ctx, web, "Internal Tasks", web.Title);
+                AddListToQuickLaunch(ctx, web, "Calendar", web.Title);
+                AddListToQuickLaunch(ctx, web, "Contacts", web.Title);
+
+            }
+
+        }
+
+
         private static void AddListToQuickLaunch(ClientContext ctx, Web web, string listTitle, string parentNodeTitle = "")
         {
             if (web.ListExists(listTitle))
             {
                 List list = web.GetListByTitle(listTitle);
+
                 ctx.Load(list, s => s.DefaultViewUrl, s => s.Title);
                 ctx.ExecuteQuery();
-                web.AddNavigationNode(listTitle, new Uri(list.DefaultViewUrl), parentNodeTitle, OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+                web.AddNavigationNode(listTitle, new Uri(list.DefaultViewUrl, UriKind.Relative), parentNodeTitle, OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
 
             }
         }
-
 
 
         /// <summary>
