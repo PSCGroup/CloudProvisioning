@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectItem Type="Microsoft.VisualStudio.SharePoint.Module" DefaultFile="Elements.xml" SupportedTrustLevels="All" SupportedDeploymentScopes="Web, Site" xmlns="http://schemas.microsoft.com/VisualStudio/2010/SharePointTools/SharePointProjectItemModel">
+  <Files>
+    <ProjectItemFile Source="Elements.xml" Type="ElementManifest" />
+    <ProjectItemFile Source="Views\Shared\_GridPager.cshtml" Target="Views\Shared\" Type="ElementFile" />
+    <ProjectItemFile Source="Views\Shared\_Grid.cshtml" Target="Views\Shared\" Type="ElementFile" />
+    <ProjectItemFile Source="Scripts\gridmvc.min.js" Target="Scripts\" Type="ElementFile" />
+    <ProjectItemFile Source="Scripts\gridmvc.lang.ru.js" Target="Scripts\" Type="ElementFile" />
+    <ProjectItemFile Source="Scripts\gridmvc.js" Target="Scripts\" Type="ElementFile" />
+    <ProjectItemFile Source="Grid.mvc.readme" Type="ElementFile" />
+    <ProjectItemFile Source="Content\Gridmvc.css" Target="Content\" Type="ElementFile" />
+  </Files>
+</ProjectItem>

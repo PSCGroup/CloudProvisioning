@@ -1,0 +1,66 @@
+﻿@model CloudProvisioningWeb.Models.SharePointSiteRequest
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <div class="row"><br /></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-12"><h3>@Html.LabelFor(request => request.Title) @Html.EditorFor(request => request.Title, new { htmlAttributes = new { @class = "form-control" } })</h3></div>
+                </div>
+
+
+            </div>
+            <table class="table">
+                <tr>
+                    <td>Status: </td>
+                    @if (@Model.ProvisioningStatus == String.Empty)
+                    {
+                        <td>Awaiting provisioning <a href="@Model.LinkToProvisionedSite" class="btn btn-success pull-right">Go to site</a></td>
+                    }
+                    else if (@Model.ProvisioningStatus == "Completed")
+                    {
+                        <td>@Model.ProvisioningStatus <a href="@Model.LinkToProvisionedSite" class="btn btn-success btn-block">Go to site</a></td>
+                    }
+
+                    else
+                    {
+                        <td>@Model.ProvisioningStatus</td>
+                    }
+                </tr>
+                @if (@Model.ProvisioningStatus == "Error")
+                {
+                    <tr class="alert-danger">
+                        <td>Error: </td>
+                        <td>@Model.ErrorMessage</td>
+                    </tr>
+                }
+                
+                <tr>
+                    <td>URL: </td>
+                    <td>@Html.EditorFor(request => request.Url, new { htmlAttributes = new { @class = "form-control" } })</td>
+                </tr>
+                <tr>
+                    <td>Description: </td>
+                    <td>@Html.EditorFor(request => request.Description, new { htmlAttributes = new { @class = "form-control" } })</td>
+                </tr>
+                <tr>
+                    <td>Owner: </td>
+                    <td>@Model.OwnerDisplayName</td>
+                </tr>
+
+
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
+</div>

@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    var installed = ViewBag.ListsExist;
+
+
+}
+
+    <div class="jumbotron">
+        <h2>Client &amp; Project Site Provisioning</h2>
+        <p class="lead">Click below to execute the provisioning job manually.  This will not be available in the final application.</p>
+        <p>@Html.ActionLink("Provision Sites", "Provision", "Home", null, new { @class = "btn btn-default btn-large" })</p>
+    </div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div style="height: 125px">
+            <h2>Client Site Collections</h2>
+            <p>Create and manage requests for client site collections.</p>
+        </div>
+
+        <p><a class="btn btn-default" href="@ViewBag.ClientSitesUrl">Manage client site collections &raquo;</a></p>
+        <hr/>
+    </div>
+    <div class="col-md-4">
+        <div style="height: 125px">
+            <h2>Project Sites</h2>
+
+            <p>Create and manage requests for project sites.  Project sites must be created in client site collections.</p>
+        </div>
+        <p><a class="btn btn-default" href="@ViewBag.ProjectSitesUrl">Manage project sites &raquo;</a></p>
+        <hr />
+    </div>
+    <div class="col-md-4" >
+        <div style="height: 125px">
+            <h2>Site Templates</h2>
+            <p>Manage templates used by the provisioning routine</p>
+        </div>
+        <p><a class="btn btn-default" href="@ViewBag.SiteTemplatesUrl">Manage site templates &raquo;</a></p>
+        <hr />
+    </div>
+</div>
+

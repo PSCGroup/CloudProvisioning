@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--Created:cb85b80c-f585-40ff-8bfc-12ff4d0e34a9-->
+<App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest"
+     Name="CloudProvisioning"
+     ProductID="{eb0614ce-4fcf-4d2c-82f3-3cee5ce05867}"
+     Version="1.0.0.1"
+     SharePointMinVersion="16.0.0.0"
+>
+  <Properties>
+    <Title>CloudProvisioning</Title>
+    <StartPage>~remoteAppUrl/?{StandardTokens}&amp;SPHostTitle={HostTitle}</StartPage>
+    <InstalledEventEndpoint>~remoteAppUrl/Services/AppEventReceiver.svc</InstalledEventEndpoint>
+    <UninstallingEventEndpoint>~remoteAppUrl/Services/AppEventReceiver.svc</UninstallingEventEndpoint>
+  </Properties>
+
+  <AppPrincipal>
+    <RemoteWebApplication ClientId="*" />
+  </AppPrincipal>
+  <AppPermissionRequests AllowAppOnlyPolicy="true">
+    <AppPermissionRequest Scope="http://sharepoint/taxonomy" Right="Read" />
+    <AppPermissionRequest Scope="http://sharepoint/content/tenant" Right="FullControl" />
+  </AppPermissionRequests>
+</App>

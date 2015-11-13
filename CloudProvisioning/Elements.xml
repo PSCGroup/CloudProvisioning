@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <Module Name="RootModule">
+    <File Path="Views\Shared\_GridPager.cshtml" Url="Views/Shared/_GridPager.cshtml" ReplaceContent="TRUE" />
+    <File Path="Views\Shared\_Grid.cshtml" Url="Views/Shared/_Grid.cshtml" ReplaceContent="TRUE" />
+    <File Path="Scripts\gridmvc.min.js" Url="Scripts/gridmvc.min.js" ReplaceContent="TRUE" />
+    <File Path="Scripts\gridmvc.lang.ru.js" Url="Scripts/gridmvc.lang.ru.js" ReplaceContent="TRUE" />
+    <File Path="Scripts\gridmvc.js" Url="Scripts/gridmvc.js" ReplaceContent="TRUE" />
+    <File Path="Grid.mvc.readme" Url="Grid.mvc.readme" ReplaceContent="TRUE" />
+    <File Path="Content\Gridmvc.css" Url="Content/Gridmvc.css" ReplaceContent="TRUE" />
+  </Module>
+</Elements>

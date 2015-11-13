@@ -1,0 +1,671 @@
+<?xml version="1.0"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2015/08/ProvisioningSchema">
+  <pnp:Preferences Generator="OfficeDevPnP.Core, Version=1.8.1115.0, Culture=neutral, PublicKeyToken=null" />
+  <pnp:Templates ID="CONTAINER-TEMPLATE-708D1227D11D4FA5ABB4EE391E449641">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-708D1227D11D4FA5ABB4EE391E449641" Version="1">
+      <pnp:RegionalSettings AdjustHijriDays="0" AlternateCalendarType="None" CalendarType="None" Collation="25" FirstDayOfWeek="Sunday" FirstWeekOfYear="0" LocaleId="1033" ShowWeeks="false" Time24="false" TimeZone="13" WorkDayEndHour="5:00PM" WorkDays="62" WorkDayStartHour="8:00AM" />
+      <pnp:SupportedUILanguages>
+        <pnp:SupportedUILanguage LCID="1033" />
+      </pnp:SupportedUILanguages>
+      <pnp:PropertyBagEntries>
+        <pnp:PropertyBagEntry Key="DesignPreviewThemedCssFolderUrl" Value="" />
+        <pnp:PropertyBagEntry Key="CreatedDesignMinorVersion" Value="1" />
+        <pnp:PropertyBagEntry Key="CreatedDesignName" Value="PSC - Alternate" />
+        <pnp:PropertyBagEntry Key="CreatedDesignGuid" Value="00000000-0000-0000-0000-000000000000" />
+        <pnp:PropertyBagEntry Key="allowslistpolicy" Value="False" />
+        <pnp:PropertyBagEntry Key="OriginalNotebookUrl" Value="https://psclistens1.sharepoint.com{site}/_layouts/15/WopiFrame.aspx?sourcedoc={e91ce75c-a801-45ee-86a2-6ec394ceb7af}&amp;action=editnew" />
+        <pnp:PropertyBagEntry Key="SiteCollectionGroupId936b6f54-8469-4fc4-9497-c32018566f36" Value="ce4ebfac-7c2c-49d1-b3af-7a53f9104ad1" />
+      </pnp:PropertyBagEntries>
+      <pnp:Security>
+        <pnp:AdditionalAdministrators>
+          <pnp:User Name="i:0#.f|membership|cnjohnson@psclistens.com" />
+          <pnp:User Name="i:0#.f|membership|rbellak@psclistens.com" />
+        </pnp:AdditionalAdministrators>
+        <pnp:AdditionalOwners>
+          <pnp:User Name="i:0#.f|membership|azakhodin@psclistens.com" />
+          <pnp:User Name="i:0#.f|membership|cnjohnson@psclistens.com" />
+          <pnp:User Name="i:0#.f|membership|jcrowell@psclistens.com" />
+          <pnp:User Name="i:0#.f|membership|rfarag@psclistens.com" />
+        </pnp:AdditionalOwners>
+        <pnp:AdditionalMembers>
+          <pnp:User Name="c:0-.f|rolemanager|spo-grid-all-users/14eb87ba-2535-4b2a-ad87-d893268b531d" />
+        </pnp:AdditionalMembers>
+        <pnp:SiteGroups>
+          <pnp:SiteGroup Title="PSC Owners" Description="These users have full control of the client site and its project subsites." Owner="cnjohnson@psclistens.com">
+            <pnp:Members>
+              <pnp:User Name="cnjohnson@psclistens.com" />
+            </pnp:Members>
+          </pnp:SiteGroup>
+          <pnp:SiteGroup Title="PSC Members" Description="These users have contribute access to the client site and its project subsites." Owner="cnjohnson@psclistens.com">
+            <pnp:Members>
+              <pnp:User Name="c:0-.f|rolemanager|spo-grid-all-users/14eb87ba-2535-4b2a-ad87-d893268b531d" />
+            </pnp:Members>
+          </pnp:SiteGroup>
+          <pnp:SiteGroup Title="Client Members" Description="Client external users of this site.  This group does not have access to Internal lists and libraries." Owner="PSC Members">
+            <pnp:Members>
+              <pnp:User Name="cnjohnson@psclistens.com" />
+            </pnp:Members>
+          </pnp:SiteGroup>
+        </pnp:SiteGroups>
+        <pnp:Permissions>
+          <pnp:RoleAssignments>
+            <pnp:RoleAssignment Principal="Client Members" RoleDefinition="Contribute" />
+            <pnp:RoleAssignment Principal="PSC Owners" RoleDefinition="Full Control" />
+            <pnp:RoleAssignment Principal="PSC Members" RoleDefinition="Contribute" />
+          </pnp:RoleAssignments>
+        </pnp:Permissions>
+      </pnp:Security>
+      <pnp:SiteFields>
+        <Field Type="DateTime" DisplayName="Meeting Date" Description="The date and time of the meeting." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateTime" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{06804206-4cda-4e0b-a468-ed00357d491b}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Meeting_x0020_Date" Name="Meeting_x0020_Date">
+          <Default>[today]</Default>
+        </Field>
+        <Field ID="{e954460e-4ac3-463a-a9c4-bf9e55564e24}" Type="DateTime" DisplayName="$Resources:core,LastSharedByTimeFieldDisplayName;" Name="LastSharedByTime" StaticName="LastSharedByTime" Group="_Hidden" Sealed="TRUE" AllowDeletion="FALSE" ReadOnly="TRUE" ShowInDisplayForm="FALSE" ShowInEditForm="FALSE" ShowInListSettings="FALSE" Viewable="FALSE" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" />
+        <Field Type="DateTime" DisplayName="For Week Ending on Date" Description="The end date of the week for which this status report was created." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{0fab0b16-972f-4dd3-afc1-94dc644687bd}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date">
+        </Field>
+        <Field Type="Link" DisplayName="Reference Link" RichText="TRUE" RichTextMode="ThemeHtml" Description="Link to relevant content on this project site." Required="FALSE" Group="PSC Client and Project Columns" ID="{18bdcc16-0b63-436e-95a4-cff64261523b}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Reference_x0020_Link" Name="Reference_x0020_Link" />
+        <Field Type="Choice" DisplayName="Resolution Priority" Description="Indicate how important the resolution of this issue is to the project, in relation to other issues." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" Group="PSC Client and Project Columns" ID="{3722642a-b5ba-4018-9261-8ba057348a31}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Resolution_x0020_Priority" Name="Resolution_x0020_Priority">
+          <Default>1-High</Default>
+          <CHOICES>
+            <CHOICE>1-High</CHOICE>
+            <CHOICE>2-Medium</CHOICE>
+            <CHOICE>3-Low</CHOICE>
+          </CHOICES>
+        </Field>
+        <Field Type="Note" DisplayName="Technology_0" StaticName="m56299a61ad544488cd1b0f516cd1a87" Name="m56299a61ad544488cd1b0f516cd1a87" ID="{51bf442e-2f7e-453e-b8dc-c6022c0a2d6d}" ShowInViewForms="FALSE" Required="FALSE" Hidden="TRUE" CanToggleHidden="TRUE" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" />
+        <Field Type="DateTime" DisplayName="Signoff Date" Description="The date the client signed off on the completion or resolution." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{0104594f-d342-424a-958e-2936e5514f7a}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Signoff_x0020_Date" Name="Signoff_x0020_Date">
+        </Field>
+        <Field Type="Choice" DisplayName="Issue Resolution Status" Description="The resolution status of this task or issue." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" Group="PSC Client and Project Columns" ID="{95695751-5cbc-4641-85b2-bebc1080c3be}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Issue_x0020_Resolution_x0020_Status" Name="Issue_x0020_Resolution_x0020_Status">
+          <Default>05 - New Item</Default>
+          <CHOICES>
+            <CHOICE>05 - New Item</CHOICE>
+            <CHOICE>10  - Acknowledged</CHOICE>
+            <CHOICE>15 - Gather Requirements and Estimate</CHOICE>
+            <CHOICE>20 - Waiting for Approval of Estimate</CHOICE>
+            <CHOICE>25 - Estimate Approved / Scheduled</CHOICE>
+            <CHOICE>30 - In-Progress</CHOICE>
+            <CHOICE>35 - Unit Testing</CHOICE>
+            <CHOICE>40 - Submitted for Testing</CHOICE>
+            <CHOICE>45 - Waiting for Signoff</CHOICE>
+            <CHOICE>50 - Closed</CHOICE>
+            <CHOICE>55 - Deferred</CHOICE>
+            <CHOICE>60 - Duplicate</CHOICE>
+          </CHOICES>
+        </Field>
+        <Field Type="Choice" DisplayName="RAID Status" Description="Indicate the status of this RAID log entry." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" Group="PSC Client and Project Columns" ID="{14fb3d5c-ebfb-4b6d-a30a-2036ce34bd46}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="RAID_x0020_Status" Name="RAID_x0020_Status">
+          <Default>Active</Default>
+          <CHOICES>
+            <CHOICE>Active</CHOICE>
+            <CHOICE>Resolved</CHOICE>
+            <CHOICE>Closed</CHOICE>
+          </CHOICES>
+        </Field>
+        <Field Type="Number" DisplayName="Actual Hours" Description="How long did this actually take to complete?" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Decimals="0" Group="PSC Client and Project Columns" ID="{1fd50f64-82e0-4f12-8baa-be65d3b1ddcb}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Actual_x0020_Hours" Name="Actual_x0020_Hours">
+        </Field>
+        <Field Type="Text" DisplayName="Test Site Column" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" MaxLength="255" Group="Custom Columns" ID="{ba7b7a65-4ebe-47be-9a12-0b0f380730c9}" SourceID="{65398e5c-4c15-463d-9280-91db901a2b8a}" StaticName="Test_x0020_Site_x0020_Column" Name="Test_x0020_Site_x0020_Column">
+        </Field>
+        <Field Type="DateTime" DisplayName="Submitted" Description="The date this document was submitted to the client." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{e118e465-dce7-40f6-8233-56165ad997be}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Submitted" Name="Submitted" CalType="0">
+        </Field>
+        <Field Type="DateTime" DisplayName="Resolution Due Date" Description="By what date does this need to be resolved?" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{93188f73-5690-4108-933e-406cf3394fea}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Resolution_x0020_Due_x0020_Date" Name="Resolution_x0020_Due_x0020_Date">
+        </Field>
+        <Field ID="{ef991a83-108d-4407-8ee5-ccc0c3d836b9}" Type="UserMulti" DisplayName="Shared With" Mult="TRUE" Name="SharedWithUsers" StaticName="SharedWithUsers" Group="_Hidden" Sealed="TRUE" AllowDeletion="FALSE" ReadOnly="TRUE" ShowInDisplayForm="FALSE" ShowInEditForm="FALSE" ShowInListSettings="FALSE" Viewable="FALSE" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" />
+        <Field Type="DateTime" DisplayName="Signed Off" Description="The date on which this document was approved (signed off) by the client." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{11494b83-a547-429e-976f-abe74bca6610}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Signed_x0020_Off" Name="Signed_x0020_Off">
+        </Field>
+        <Field Type="Note" DisplayName="Issue Comments" Description="Add your comments to the list of comments related to this issue." Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="6" RichText="FALSE" AppendOnly="TRUE" Sortable="FALSE" Group="PSC Client and Project Columns" ID="{f8bb3589-be1b-4a8b-a129-a4d23ab5c3ef}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Issue_x0020_Comments" Name="Issue_x0020_Comments">
+        </Field>
+        <Field Type="Number" DisplayName="Estimated Hours" Description="How long will this take to complete?" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Decimals="0" Group="PSC Client and Project Columns" ID="{958d9294-bdc4-4da2-8a76-236d292d11a8}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Estimated_x0020_Hours" Name="Estimated_x0020_Hours">
+        </Field>
+        <Field Type="Number" DisplayName="Issue Priority" Description="1 = High Priority / 10 = Low Priority" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Min="1" Max="10" Decimals="0" Group="PSC Client and Project Columns" ID="{fc68c699-6411-43ca-9f70-9529d2d92443}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Issue_x0020_Priority" Name="Issue_x0020_Priority">
+        </Field>
+        <Field Type="DateTime" DisplayName="Expected Completion Date" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="DateOnly" Group="PSC Client and Project Columns" FriendlyDisplayFormat="Disabled" ID="{ce1f909b-9276-456e-9a2e-0f3c24351cec}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Expected_x0020_Completion_x0020_Date" Name="Expected_x0020_Completion_x0020_Date">
+        </Field>
+        <Field Type="User" DisplayName="Resolution Assigned To" List="UserInfo" Description="The person responsible for resolving this issue." Required="FALSE" EnforceUniqueValues="FALSE" ShowField="ImnName" UserSelectionMode="PeopleOnly" UserSelectionScope="0" Group="PSC Client and Project Columns" ID="{c5fda8ab-cde6-4a32-9bbb-22280cca396a}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Resolution_x0020_Assigned_x0020_To" Name="Resolution_x0020_Assigned_x0020_To" />
+        <Field Type="Choice" DisplayName="Task Type" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" Group="PSC Client and Project Columns" ID="{550ec0bc-fdd8-4bb1-a707-0096d06feee8}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="Task_x0020_Type" Name="Task_x0020_Type">
+          <Default>Issue</Default>
+          <CHOICES>
+            <CHOICE>Task</CHOICE>
+            <CHOICE>Issue</CHOICE>
+            <CHOICE>Question</CHOICE>
+            <CHOICE>Enhancement</CHOICE>
+          </CHOICES>
+        </Field>
+        <Field ID="{725e8dc4-ee43-488a-94fa-85a380aa1302}" Type="Note" DisplayName="$Resources:core,LastSharedByUserFieldDisplayName;" Name="LastSharedByUser" StaticName="LastSharedByUser" Group="_Hidden" Sealed="TRUE" AllowDeletion="FALSE" ReadOnly="TRUE" ShowInDisplayForm="FALSE" ShowInEditForm="FALSE" ShowInListSettings="FALSE" Viewable="FALSE" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" />
+        <Field Type="Choice" DisplayName="RAID Type" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Dropdown" FillInChoice="FALSE" Group="PSC Client and Project Columns" ID="{90e5a5c6-8b33-4838-b37e-e8a24be8c300}" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" StaticName="RAID_x0020_Type" Name="RAID_x0020_Type">
+          <Default>Risk</Default>
+          <CHOICES>
+            <CHOICE>Risk</CHOICE>
+            <CHOICE>Assumption</CHOICE>
+            <CHOICE>Issue</CHOICE>
+            <CHOICE>Dependency</CHOICE>
+          </CHOICES>
+        </Field>
+        <Field Type="Note" DisplayName="Client Name_0" StaticName="i61091c70e514b7e834479ae477a9d33" Name="i61091c70e514b7e834479ae477a9d33" ID="{3d798cd3-49e1-4264-b787-d33ad7bff35f}" ShowInViewForms="FALSE" Required="FALSE" Hidden="TRUE" CanToggleHidden="TRUE" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" />
+        <Field ID="{d3c9caf7-044c-4c71-ae64-092981e54b33}" Type="Note" DisplayName="Shared With Details" Name="SharedWithDetails" StaticName="SharedWithDetails" Group="_Hidden" Sealed="TRUE" AllowDeletion="FALSE" ReadOnly="TRUE" ShowInDisplayForm="FALSE" ShowInEditForm="FALSE" ShowInListSettings="FALSE" Viewable="FALSE" SourceID="{137e0b9c-c5bf-49a1-86c0-7ccf7e11f7c4}" />
+      </pnp:SiteFields>
+      <pnp:ContentTypes>
+        <pnp:ContentType ID="0x010039FC35B44EDB514986FF49B047DC65D5" Name="PSC Client and Project Item" Description="The parent content type for PSC client or project items." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x010039FC35B44EDB514986FF49B047DC65D503" Name="RAID Log Entry" Description="A RAID Log entry for a project." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="14fb3d5c-ebfb-4b6d-a30a-2036ce34bd46" Name="RAID_x0020_Status" Required="true" />
+            <pnp:FieldRef ID="c5fda8ab-cde6-4a32-9bbb-22280cca396a" Name="Resolution_x0020_Assigned_x0020_To" />
+            <pnp:FieldRef ID="3722642a-b5ba-4018-9261-8ba057348a31" Name="Resolution_x0020_Priority" Required="true" />
+            <pnp:FieldRef ID="93188f73-5690-4108-933e-406cf3394fea" Name="Resolution_x0020_Due_x0020_Date" />
+            <pnp:FieldRef ID="90e5a5c6-8b33-4838-b37e-e8a24be8c300" Name="RAID_x0020_Type" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x010039FC35B44EDB514986FF49B047DC65D504" Name="Project Issue or Task" Description="A task, issue, question or enhancement" Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" />
+            <pnp:FieldRef ID="fc68c699-6411-43ca-9f70-9529d2d92443" Name="Issue_x0020_Priority" Required="true" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="f8bb3589-be1b-4a8b-a129-a4d23ab5c3ef" Name="Issue_x0020_Comments" />
+            <pnp:FieldRef ID="c5fda8ab-cde6-4a32-9bbb-22280cca396a" Name="Resolution_x0020_Assigned_x0020_To" />
+            <pnp:FieldRef ID="95695751-5cbc-4641-85b2-bebc1080c3be" Name="Issue_x0020_Resolution_x0020_Status" Required="true" />
+            <pnp:FieldRef ID="550ec0bc-fdd8-4bb1-a707-0096d06feee8" Name="Task_x0020_Type" Required="true" />
+            <pnp:FieldRef ID="64cd368d-2f95-4bfc-a1f9-8d4324ecb007" Name="StartDate" />
+            <pnp:FieldRef ID="ce1f909b-9276-456e-9a2e-0f3c24351cec" Name="Expected_x0020_Completion_x0020_Date" />
+            <pnp:FieldRef ID="0104594f-d342-424a-958e-2936e5514f7a" Name="Signoff_x0020_Date" />
+            <pnp:FieldRef ID="958d9294-bdc4-4da2-8a76-236d292d11a8" Name="Estimated_x0020_Hours" />
+            <pnp:FieldRef ID="1fd50f64-82e0-4f12-8baa-be65d3b1ddcb" Name="Actual_x0020_Hours" />
+            <pnp:FieldRef ID="18bdcc16-0b63-436e-95a4-cff64261523b" Name="Reference_x0020_Link" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA" Name="PSC Client and Project Document" Description="The parent content type for a PSC client or project document." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA02" Name="Status Report" Description="A weekly project status report provided to the client." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="0fab0b16-972f-4dd3-afc1-94dc644687bd" Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA03" Name="Requirements Document" Description="A requirements document for a client project." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="e118e465-dce7-40f6-8233-56165ad997be" Name="Submitted" />
+            <pnp:FieldRef ID="11494b83-a547-429e-976f-abe74bca6610" Name="Signed_x0020_Off" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA04" Name="Project Kickoff" Description="Present this slide deck at the project kickoff meeting with a client." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA05" Name="Project Completion Document" Description="A document presented to the client upon completion of the project." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="e118e465-dce7-40f6-8233-56165ad997be" Name="Submitted" />
+            <pnp:FieldRef ID="11494b83-a547-429e-976f-abe74bca6610" Name="Signed_x0020_Off" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA06" Name="Meeting Notes" Description="Notes taken during a client meeting." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="06804206-4cda-4e0b-a468-ed00357d491b" Name="Meeting_x0020_Date" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA07" Name="Meeting Agenda" Description="The agenda for a client meeting." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="06804206-4cda-4e0b-a468-ed00357d491b" Name="Meeting_x0020_Date" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA08" Name="Change Request" Description="Documented scope and budget changes for the project." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+            <pnp:FieldRef ID="e118e465-dce7-40f6-8233-56165ad997be" Name="Submitted" />
+            <pnp:FieldRef ID="11494b83-a547-429e-976f-abe74bca6610" Name="Signed_x0020_Off" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA09" Name="General Project Document" Description="A general client project document." Group="PSC Client and Project Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" Required="true" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+        <pnp:ContentType ID="0x010100A773C8964827A7499F6E6256A2BE7C22" Name="Test" Description="Test content type." Group="Custom Content Types" NewFormUrl="" EditFormUrl="" DisplayFormUrl="">
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="c042a256-787d-4a6f-8a8a-cf6ab767f12d" Name="ContentType" />
+            <pnp:FieldRef ID="5f47e085-2150-41dc-b661-442f3027f552" Name="SelectFilename" />
+            <pnp:FieldRef ID="8553196d-ec8d-4564-9861-3dbe931050c8" Name="FileLeafRef" Required="true" />
+            <pnp:FieldRef ID="8c06beca-0777-48f7-91c7-6da68bc07b69" Name="Created" Hidden="true" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" />
+            <pnp:FieldRef ID="28cf69c5-fa48-462a-b5cd-27b6f9d2bd5f" Name="Modified" Hidden="true" />
+            <pnp:FieldRef ID="822c78e3-1ea9-4943-b449-57863ad33ca9" Name="Modified_x0020_By" />
+            <pnp:FieldRef ID="4dd7e525-8d6b-4cb4-9d3e-44ee25f973eb" Name="Created_x0020_By" />
+            <pnp:FieldRef ID="ba7b7a65-4ebe-47be-9a12-0b0f380730c9" Name="Test_x0020_Site_x0020_Column" />
+          </pnp:FieldRefs>
+        </pnp:ContentType>
+      </pnp:ContentTypes>
+      <pnp:Lists>
+        <pnp:ListInstance Title="Contacts" Description="" DocumentTemplate="" TemplateType="105" Url="Lists/Contacts" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-7e6d-4186-9ba8-c047ac750105" EnableFolderCreation="false">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0106" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{84603F74-65CE-4D8E-912F-6B750160FC8D}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All contacts" Url="/sites/client/Lists/Contacts/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/contacts.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Title" />
+                  <FieldRef Name="FirstName" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="Attachments" />
+                <FieldRef Name="LinkTitle" />
+                <FieldRef Name="FirstName" />
+                <FieldRef Name="Company" />
+                <FieldRef Name="WorkPhone" />
+                <FieldRef Name="HomePhone" />
+                <FieldRef Name="Email" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fdc8216d-dabf-441d-8ac0-f6c626fbdc24" Name="LastNamePhonetic" DisplayName="Last Name Phonetic" />
+            <pnp:FieldRef ID="4a722dd4-d406-4356-93f9-2550b8f50dd0" Name="FirstName" DisplayName="First Name" />
+            <pnp:FieldRef ID="ea8f7ca9-2a0e-4a89-b8bf-c51a6af62c73" Name="FirstNamePhonetic" DisplayName="First Name Phonetic" />
+            <pnp:FieldRef ID="475c2610-c157-4b91-9e2d-6855031b3538" Name="FullName" DisplayName="Full Name" />
+            <pnp:FieldRef ID="fce16b4c-fe53-4793-aaab-b4892e736d15" Name="Email" DisplayName="Email Address" />
+            <pnp:FieldRef ID="038d1503-4629-40f6-adaf-b47d1ab2d4fe" Name="Company" DisplayName="Company" />
+            <pnp:FieldRef ID="034aae88-6e9a-4e41-bc8a-09b6c15fcdf4" Name="CompanyPhonetic" DisplayName="Company Phonetic" />
+            <pnp:FieldRef ID="c4e0f350-52cc-4ede-904c-dd71a3d11f7d" Name="JobTitle" DisplayName="Job Title" />
+            <pnp:FieldRef ID="fd630629-c165-4513-b43c-fdb16b86a14d" Name="WorkPhone" DisplayName="Business Phone" />
+            <pnp:FieldRef ID="2ab923eb-9880-4b47-9965-ebf93ae15487" Name="HomePhone" DisplayName="Home Phone" />
+            <pnp:FieldRef ID="2a464df1-44c1-4851-949d-fcd270f0ccf2" Name="CellPhone" DisplayName="Mobile Number" />
+            <pnp:FieldRef ID="9d1cacc8-f452-4bc1-a751-050595ad96e1" Name="WorkFax" DisplayName="Fax Number" />
+            <pnp:FieldRef ID="fc2e188e-ba91-48c9-9dd3-16431afddd50" Name="WorkAddress" DisplayName="Address" />
+            <pnp:FieldRef ID="6ca7bd7f-b490-402e-af1b-2813cf087b1e" Name="WorkCity" DisplayName="City" />
+            <pnp:FieldRef ID="ceac61d3-dda9-468b-b276-f4a6bb93f14f" Name="WorkState" DisplayName="State/Province" />
+            <pnp:FieldRef ID="9a631556-3dac-49db-8d2f-fb033b0fdc24" Name="WorkZip" DisplayName="ZIP/Postal Code" />
+            <pnp:FieldRef ID="3f3a5c85-9d5a-4663-b925-8b68a678ea3a" Name="WorkCountry" DisplayName="Country/Region" />
+            <pnp:FieldRef ID="a71affd2-dcc7-4529-81bc-2fe593154a5f" Name="WebPage" DisplayName="Web Page" />
+            <pnp:FieldRef ID="9da97a8a-1da5-4a77-98d3-4bc10456e700" Name="Comments" DisplayName="Notes" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Internal Documents" Description="Use this library to store documents that only PSC employees can see.  Clients do not have access to this library." DocumentTemplate="{site}/Internal Documents/Forms/template.dotx" OnQuickLaunch="true" TemplateType="101" Url="Internal Documents" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" ContentTypesEnabled="true" EnableAttachments="false">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA09" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA06" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA07" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA02" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA08" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA03" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA04" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA05" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{8AC21D4D-DFA2-4296-B8CE-B25183F08E09}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="/sites/client/Internal Documents/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{21332679-34D6-4A2A-8158-A9F45D16FECD}" MobileView="TRUE" Type="HTML" DisplayName="Status Reports" Url="/sites/client/Internal Documents/Forms/Status Reports.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" Ascending="FALSE" />
+                </OrderBy>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="ContentType" />
+                    <Value Type="Computed">Status Report</Value>
+                  </Eq>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="RoutingRuleDescription" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{F69F33F3-1D8D-42B3-9B73-5191BAEAF932}" MobileView="TRUE" Type="HTML" DisplayName="Meeting Documents" Url="/sites/client/Internal Documents/Forms/Meeting Documents.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Meeting_x0020_Date" />
+                </OrderBy>
+                <Where>
+                  <Or>
+                    <Eq>
+                      <FieldRef Name="ContentType" />
+                      <Value Type="Computed">Meeting Notes</Value>
+                    </Eq>
+                    <Eq>
+                      <FieldRef Name="ContentType" />
+                      <Value Type="Computed">Meeting Agenda</Value>
+                    </Eq>
+                  </Or>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="RoutingRuleDescription" />
+                <FieldRef Name="Meeting_x0020_Date" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{0D8CF1F4-7353-4D92-BDA1-51908BE57B54}" MobileView="TRUE" Type="HTML" DisplayName="Change Requests" Url="/sites/client/Internal Documents/Forms/Change Requests.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Created" Ascending="FALSE" />
+                </OrderBy>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="ContentType" />
+                    <Value Type="Computed">Change Request</Value>
+                  </Eq>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="RoutingRuleDescription" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Submitted" />
+                <FieldRef Name="Signed_x0020_Off" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="06804206-4cda-4e0b-a468-ed00357d491b" Name="Meeting_x0020_Date" DisplayName="Meeting Date" />
+            <pnp:FieldRef ID="0fab0b16-972f-4dd3-afc1-94dc644687bd" Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" DisplayName="For Week Ending on Date" />
+            <pnp:FieldRef ID="e118e465-dce7-40f6-8233-56165ad997be" Name="Submitted" DisplayName="Submitted" />
+            <pnp:FieldRef ID="11494b83-a547-429e-976f-abe74bca6610" Name="Signed_x0020_Off" DisplayName="Signed Off" />
+          </pnp:FieldRefs>
+          <pnp:Security>
+            <pnp:BreakRoleInheritance CopyRoleAssignments="false" ClearSubscopes="false">
+              <pnp:RoleAssignment Principal="PSC Owners" RoleDefinition="Full Control" />
+              <pnp:RoleAssignment Principal="PSC Members" RoleDefinition="Contribute" />
+              <pnp:RoleAssignment Principal="Designers" RoleDefinition="Design" />
+              <pnp:RoleAssignment Principal="Hierarchy Managers" RoleDefinition="Manage Hierarchy" />
+              <pnp:RoleAssignment Principal="Approvers" RoleDefinition="Approve" />
+              <pnp:RoleAssignment Principal="Restricted Readers" RoleDefinition="Restricted Read" />
+              <pnp:RoleAssignment Principal="Translation Managers" RoleDefinition="Restricted Interfaces for Translation" />
+            </pnp:BreakRoleInheritance>
+          </pnp:Security>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Shared Documents" Description="A library for documents that are shared with everyone who has access to this site." DocumentTemplate="{site}/Shared Documents/Forms/template.dotx" OnQuickLaunch="true" TemplateType="101" Url="Shared Documents" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" ContentTypesEnabled="true" EnableAttachments="false">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA09" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA06" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA07" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA02" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA08" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA03" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA04" />
+            <pnp:ContentTypeBinding ContentTypeID="0x01010069D1E4B64C2B1442B7D6DFBBE59638DA05" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{2C6998D0-3F3A-44AB-9F5F-4CBC499C7E76}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="/sites/client/Shared Documents/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="ContentType" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{F75BF1DD-CFB3-4942-89A9-7FCBC473546B}" MobileView="TRUE" Type="HTML" DisplayName="Status Reports" Url="/sites/client/Shared Documents/Forms/Status Reports.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" Ascending="FALSE" />
+                </OrderBy>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="ContentType" />
+                    <Value Type="Computed">Status Report</Value>
+                  </Eq>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="RoutingRuleDescription" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{CA04B6CF-8621-4704-BC18-44E835A06F19}" MobileView="TRUE" Type="HTML" DisplayName="Meeting Documents" Url="/sites/client/Shared Documents/Forms/Meeting Documents.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Meeting_x0020_Date" />
+                </OrderBy>
+                <Where>
+                  <Or>
+                    <Eq>
+                      <FieldRef Name="ContentType" />
+                      <Value Type="Computed">Meeting Notes</Value>
+                    </Eq>
+                    <Eq>
+                      <FieldRef Name="ContentType" />
+                      <Value Type="Computed">Meeting Agenda</Value>
+                    </Eq>
+                  </Or>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="RoutingRuleDescription" />
+                <FieldRef Name="Meeting_x0020_Date" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+            <View Name="{D3422EC5-67BE-40E1-9C5A-757A30462ADE}" MobileView="TRUE" Type="HTML" DisplayName="Change Requests" Url="/sites/client/Shared Documents/Forms/Change Requests.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="Created" Ascending="FALSE" />
+                </OrderBy>
+                <Where>
+                  <Eq>
+                    <FieldRef Name="ContentType" />
+                    <Value Type="Computed">Change Request</Value>
+                  </Eq>
+                </Where>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="RoutingRuleDescription" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+                <FieldRef Name="Submitted" />
+                <FieldRef Name="Signed_x0020_Off" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="Off" />
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="34a72e09-3ca6-4931-b2e3-f81c40bb87bd" Name="RoutingRuleDescription" DisplayName="Description" />
+            <pnp:FieldRef ID="06804206-4cda-4e0b-a468-ed00357d491b" Name="Meeting_x0020_Date" DisplayName="Meeting Date" />
+            <pnp:FieldRef ID="0fab0b16-972f-4dd3-afc1-94dc644687bd" Name="For_x0020_Week_x0020_Ending_x0020_on_x0020_Date" DisplayName="For Week Ending on Date" />
+            <pnp:FieldRef ID="e118e465-dce7-40f6-8233-56165ad997be" Name="Submitted" DisplayName="Submitted" />
+            <pnp:FieldRef ID="11494b83-a547-429e-976f-abe74bca6610" Name="Signed_x0020_Off" DisplayName="Signed Off" />
+            <pnp:FieldRef ID="ef991a83-108d-4407-8ee5-ccc0c3d836b9" Name="SharedWithUsers" DisplayName="Shared With" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="Site Assets" Description="Use this library to store files which are included on pages within this site, such as images on Wiki pages." DocumentTemplate="{site}/SiteAssets/Forms/template.doc" TemplateType="101" Url="SiteAssets" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="0" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{09350EEB-2248-426E-B89C-1E5F640EA105}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="/sites/client/SiteAssets/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="/_layouts/15/images/dlicon.png?rev=41">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="3881510a-4e4a-4ee8-b102-8ee8e2d0dd4b" Name="CheckoutUser" DisplayName="Checked Out To" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+      </pnp:Lists>
+      <pnp:Features>
+        <pnp:WebFeatures>
+          <pnp:Feature ID="00bfea71-c796-4402-9f2f-0eb9a6e71b18" />
+          <pnp:Feature ID="00bfea71-5932-4f9c-ad71-1557e5751100" />
+          <pnp:Feature ID="192efa95-e50c-475e-87ab-361cede5dd7f" />
+          <pnp:Feature ID="00bfea71-eb8a-40b1-80c7-506be7590102" />
+          <pnp:Feature ID="00bfea71-3a1d-41d3-a0ee-651d11570120" />
+          <pnp:Feature ID="00bfea71-513d-4ca0-96c2-6a47775c0119" />
+          <pnp:Feature ID="f151bb39-7c3b-414f-bb36-6bf18872052f" />
+          <pnp:Feature ID="00bfea71-2062-426c-90bf-714c59600103" />
+          <pnp:Feature ID="00bfea71-2d77-4a75-9fca-76516689e21a" />
+          <pnp:Feature ID="00bfea71-4ea5-48d4-a4ad-7ea5c011abe5" />
+          <pnp:Feature ID="f9ce21f8-f437-4f7e-8bc6-946378c850f0" />
+          <pnp:Feature ID="00bfea71-d1ce-42de-9c63-a44004ce0104" />
+          <pnp:Feature ID="00bfea71-7e6d-4186-9ba8-c047ac750105" />
+          <pnp:Feature ID="00bfea71-6a49-43fa-b535-d15c05500108" />
+          <pnp:Feature ID="00bfea71-f381-423d-b9d1-da7a54c50110" />
+          <pnp:Feature ID="00bfea71-9549-43f8-b978-e47e54a10600" />
+          <pnp:Feature ID="00bfea71-ec85-4903-972d-ebe475780106" />
+          <pnp:Feature ID="00bfea71-1e1d-4562-b56a-f05371bb0115" />
+        </pnp:WebFeatures>
+      </pnp:Features>
+      <pnp:ComposedLook Name="Office" ColorFile="" FontFile="" BackgroundFile="" MasterPage="{masterpagecatalog}/seattle.master" SiteLogo="{site}/SiteAssets/PSC.jpg" AlternateCSS="" Version="0" />
+      <pnp:Publishing AutoCheckRequirements="MakeCompliant">
+        <pnp:PageLayouts />
+      </pnp:Publishing>
+    </pnp:ProvisioningTemplate>
+  </pnp:Templates>
+</pnp:Provisioning>
