@@ -121,7 +121,7 @@ namespace CloudProvisioningWeb.Common
                 + "<CHOICE>COMMUNITY#0</CHOICE>" //Community
                 + "<CHOICE>BLOG#0</CHOICE>" //Blog
                 + "<CHOICE>WIKI#0</CHOICE>" //Wiki
-                + "</CHOICES></Field>";
+                + "</CHOICES><Default>STS#0</Default></Field>";
         }
 
 
@@ -291,6 +291,20 @@ namespace CloudProvisioningWeb.Common
 
                         ctx.ExecuteQuery();
 
+
+                        //List default view
+                        ctx.Load(templateLibrary, l => l.DefaultView, l => l.Fields);
+                        templateLibrary.DefaultView.ViewFields.Add("Title");
+                        templateLibrary.DefaultView.ViewFields.Add("Site Description");
+                        templateLibrary.DefaultView.ViewFields.Add("Base Template");
+                        
+                        templateLibrary.DefaultView.Update();
+
+                        templateLibrary.Update();
+                        ctx.ExecuteQueryRetry();
+
+
+
                     }
                     catch (Exception ex)
                     {
@@ -337,7 +351,7 @@ namespace CloudProvisioningWeb.Common
                     try
                     {
                         clientSiteList = web.Lists.GetByTitle(SiteCollectionListTitle);
-
+                        
                         //Create URL field (must be unique; EnforceUniqueValues must be enabled programmatically)
                         try
                         {
@@ -402,6 +416,19 @@ namespace CloudProvisioningWeb.Common
                             ctx.ExecuteQuery();
                         }
 
+
+                        //List default view
+                        ctx.Load(clientSiteList, l => l.DefaultView, l=>l.Fields);
+
+                        clientSiteList.DefaultView.ViewFields.Add("Abbreviation");
+                        clientSiteList.DefaultView.ViewFields.Add("Site Template");
+                        clientSiteList.DefaultView.ViewFields.Add("Provisioning Status");
+                        clientSiteList.DefaultView.ViewFields.Add("Processed by Provisioning Job");
+                        clientSiteList.DefaultView.ViewFields.Add("Link to Site");
+                        clientSiteList.DefaultView.ViewFields.Add("Error");
+                        clientSiteList.DefaultView.Update();
+                        clientSiteList.Update();
+                        ctx.ExecuteQueryRetry();
                     }
                     catch (Exception ex)
                     {
@@ -567,6 +594,21 @@ namespace CloudProvisioningWeb.Common
 
                         ctx.ExecuteQuery();
 
+
+                        //List default view
+                        ctx.Load(projectSiteList, l => l.DefaultView, l => l.Fields);
+
+                        projectSiteList.DefaultView.ViewFields.Add("Abbreviation");
+                        projectSiteList.DefaultView.ViewFields.Add("Site Template");
+                        projectSiteList.DefaultView.ViewFields.Add("Project Leader");
+                        projectSiteList.DefaultView.ViewFields.Add("Project Team");
+                        projectSiteList.DefaultView.ViewFields.Add("Provisioning Status");
+                        projectSiteList.DefaultView.ViewFields.Add("Processed by Provisioning Job");
+                        projectSiteList.DefaultView.ViewFields.Add("Link to Site");
+                        projectSiteList.DefaultView.ViewFields.Add("Error");
+                        projectSiteList.DefaultView.Update();
+                        projectSiteList.Update();
+                        ctx.ExecuteQueryRetry();
                     }
                     catch (Exception ex)
                     {

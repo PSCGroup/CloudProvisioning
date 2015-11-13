@@ -66,17 +66,6 @@
     </AppManifestFile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CloudProvisioningWeb\CloudProvisioningWeb.csproj">
-      <Project>{A82A2681-5589-4484-B15E-1609E2E1A316}</Project>
-      <Name>CloudProvisioningWeb</Name>
-      <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <OutputItemType>SharePointWebProjectOutput</OutputItemType>
-      <RoleName>CloudProvisioningWeb</RoleName>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="Features\Feature1\Feature1.feature">
       <FeatureId>{902bb67c-6e6e-4495-a0b9-749888e4d461}</FeatureId>
@@ -92,7 +81,17 @@
     <None Include="Views\Shared\_Grid.cshtml" />
     <None Include="Views\Shared\_GridPager.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\CloudProvisioningWeb\CloudProvisioningWeb.csproj">
+      <Project>{A82A2681-5589-4484-B15E-1609E2E1A316}</Project>
+      <Name>CloudProvisioningWeb</Name>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <OutputItemType>SharePointWebProjectOutput</OutputItemType>
+      <RoleName>CloudProvisioningWeb</RoleName>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="GridMvc">
       <HintPath>..\packages\Grid.Mvc.3.0.0\lib\net40\GridMvc.dll</HintPath>

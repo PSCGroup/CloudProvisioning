@@ -4,12 +4,12 @@
   <Properties>
     <Title>CloudProvisioning</Title>
     <StartPage>https://localhost:44305/?{StandardTokens}&amp;SPHostTitle={HostTitle}</StartPage>
-    <InstalledEventEndpoint>https://cloudprovisioning.servicebus.windows.net/1239340397/1094761378/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/Services/AppEventReceiver.svc</InstalledEventEndpoint>
-    <UninstallingEventEndpoint>https://cloudprovisioning.servicebus.windows.net/1239340397/1094761378/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/Services/AppEventReceiver.svc</UninstallingEventEndpoint>
+    <InstalledEventEndpoint>https://cloudprovisioning.servicebus.windows.net/1906058251/3414667555/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/Services/AppEventReceiver.svc</InstalledEventEndpoint>
+    <UninstallingEventEndpoint>https://cloudprovisioning.servicebus.windows.net/1906058251/3414667555/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/Services/AppEventReceiver.svc</UninstallingEventEndpoint>
   </Properties>
   <AppPrincipal>
     <AutoDeployedWebApplication>
-      <DebugInfo ClientSecret="ux4nq5Ok0/nOU0xM1tbZ40KfNkYEyA3CRXBRr284A+Y=" AppUrl="https://localhost:44305/;https://cloudprovisioning.servicebus.windows.net/1239340397/1094761378/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/" />
+      <DebugInfo ClientSecret="ux4nq5Ok0/nOU0xM1tbZ40KfNkYEyA3CRXBRr284A+Y=" AppUrl="https://localhost:44305/;https://cloudprovisioning.servicebus.windows.net/1906058251/3414667555/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/" />
     </AutoDeployedWebApplication>
   </AppPrincipal>
   <AppPermissionRequests AllowAppOnlyPolicy="true">

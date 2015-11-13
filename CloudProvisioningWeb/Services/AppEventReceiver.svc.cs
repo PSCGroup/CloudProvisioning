@@ -67,30 +67,30 @@ namespace CloudProvisioningWeb.Services
                                         AppInstallationHelper.CreateTemplateLibrary(ctx);
 
                                         //Upload sample team sites template
-                                        Dictionary<string, string> fieldValues_SampleTemplate = new Dictionary<string, string>();
-                                        fieldValues_SampleTemplate.Add("BaseTemplate", "STS#0");
-                                        fieldValues_SampleTemplate.Add("SiteDescription", "A sample custom template based on the Team site.");
-                                        fieldValues_SampleTemplate.Add("Title", "Sample Team Site");
+                                        //Dictionary<string, string> fieldValues_SampleTemplate = new Dictionary<string, string>();
+                                        //fieldValues_SampleTemplate.Add("BaseTemplate", "STS#0");
+                                        //fieldValues_SampleTemplate.Add("SiteDescription", "A sample custom template based on the Team site.");
+                                        //fieldValues_SampleTemplate.Add("Title", "Sample Team Site");
 
                                         //Upload PSC client site template
-                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\SampleTemplate.xml", fieldValues_SampleTemplate);
+                                        //AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\SampleTemplate.xml", fieldValues_SampleTemplate);
 
 
                                         Dictionary<string, string> fieldValues_PSCClientTemplate = new Dictionary<string, string>();
-                                        fieldValues_PSCClientTemplate.Add("BaseTemplate", "BLANKINTERNETCONTAINER#0");
-                                        fieldValues_PSCClientTemplate.Add("SiteDescription", "A PSC client site.");
-                                        fieldValues_PSCClientTemplate.Add("Title", "PSC Client");
+                                        fieldValues_PSCClientTemplate.Add("BaseTemplate", "STS#0");
+                                        fieldValues_PSCClientTemplate.Add("SiteDescription", "A PSC client site collection.");
+                                        fieldValues_PSCClientTemplate.Add("Title", "PSC Client Site Collection");
 
-                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\PSCClient.xml", fieldValues_PSCClientTemplate);
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\Client.xml", fieldValues_PSCClientTemplate);
 
 
                                         //Upload PSC project site template
                                         Dictionary<string, string> fieldValues_PSCProjectTemplate = new Dictionary<string, string>();
-                                        fieldValues_PSCProjectTemplate.Add("BaseTemplate", "BLANKINTERNETCONTAINER#0");
-                                        fieldValues_PSCProjectTemplate.Add("SiteDescription", "A PSC client site.");
-                                        fieldValues_PSCProjectTemplate.Add("Title", "PSC Client");
+                                        fieldValues_PSCProjectTemplate.Add("BaseTemplate", "STS#0");
+                                        fieldValues_PSCProjectTemplate.Add("SiteDescription", "A PSC project sub-site beneath a PSC Client site collection.");
+                                        fieldValues_PSCProjectTemplate.Add("Title", "PSC Project Sub-Site");
 
-                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\PSCProject.xml", fieldValues_PSCProjectTemplate);
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\Project.xml", fieldValues_PSCProjectTemplate);
 
 
 

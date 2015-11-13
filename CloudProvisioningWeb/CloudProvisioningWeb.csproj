@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetOfficeVersion>16.1</TargetOfficeVersion>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -267,11 +268,8 @@
     <Content Include="Scripts\spcontext.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Services\AppEventReceiver.svc" />
-    <Content Include="Templates\PSCClient.xml">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Templates\PSCProject.xml" />
-    <Content Include="Templates\SampleTemplate.xml" />
+    <Content Include="Templates\Client.xml" />
+    <Content Include="Templates\Project.xml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

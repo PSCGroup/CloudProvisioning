@@ -260,9 +260,6 @@ namespace CloudProvisioningWeb.Common
                     newWebUrl = CreateSiteCollection(ctx, ctx.Web.Url, siteUrl, baseTemplate, siteTitle, "", provisioningTemplate);
                 }
 
-
-
-
                 //Update list item fields in list in source web
                 request["Processed"] = DateTime.Now;
                 FieldUrlValue linkToSite = new FieldUrlValue();
@@ -484,6 +481,11 @@ namespace CloudProvisioningWeb.Common
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="web"></param>
         private static void UpdateSecurity(ClientContext ctx, Web web)
         {
 
@@ -628,6 +630,9 @@ namespace CloudProvisioningWeb.Common
                     };
 
                     newWeb.ApplyProvisioningTemplate(provisioningTemplate, applyingInfo);
+
+                    //Post-template changes
+                    ApplyPostTemplateModifications(newWeb.Url, SiteType.SiteCollection);
                 }
 
                 // All done, let's return the newly created site
