@@ -1,0 +1,25 @@
+﻿@using GridMvc.Html;
+@model IEnumerable<CloudProvisioningWeb.Models.SharePointSiteRequest>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Requests</h3>
+
+@Html.Grid(Model).Columns(columns =>
+    {
+        columns.Add(request => request.Title).Titled("Site Title")
+            .SetWidth(110)
+            .Sortable(true)
+            .Sanitized(false).Encoded(false)
+            .RenderValueAs(request => Html.ActionLink(request.Title, "View", new { id = request.Id }, null).ToHtmlString());
+
+        columns.Add(request => request.SiteTemplate.Title).Titled("Template").Sortable(true);
+        
+        
+        
+        columns.Add(request => request.ProvisioningStatus).Titled("Status").Sortable(true).Filterable(true);
+
+        columns.Add(request => request.Description);
+    }).WithPaging(20)
+

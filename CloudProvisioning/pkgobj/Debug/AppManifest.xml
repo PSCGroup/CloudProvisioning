@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Created:cb85b80c-f585-40ff-8bfc-12ff4d0e34a9-->
+<App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest" Name="CloudProvisioning" ProductID="{eb0614ce-4fcf-4d2c-82f3-3cee5ce05867}" Version="1.0.0.1" SharePointMinVersion="16.0.0.0">
+  <Properties>
+    <Title>CloudProvisioning</Title>
+    <StartPage>https://localhost:44305/?{StandardTokens}&amp;SPHostTitle={HostTitle}</StartPage>
+    <InstalledEventEndpoint>https://cloudprovisioning.servicebus.windows.net/1239340397/1094761378/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/Services/AppEventReceiver.svc</InstalledEventEndpoint>
+    <UninstallingEventEndpoint>https://cloudprovisioning.servicebus.windows.net/1239340397/1094761378/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/Services/AppEventReceiver.svc</UninstallingEventEndpoint>
+  </Properties>
+  <AppPrincipal>
+    <AutoDeployedWebApplication>
+      <DebugInfo ClientSecret="ux4nq5Ok0/nOU0xM1tbZ40KfNkYEyA3CRXBRr284A+Y=" AppUrl="https://localhost:44305/;https://cloudprovisioning.servicebus.windows.net/1239340397/1094761378/obj/c5cb8440-a708-4a61-8b2a-96523ea692af/" />
+    </AutoDeployedWebApplication>
+  </AppPrincipal>
+  <AppPermissionRequests AllowAppOnlyPolicy="true">
+    <AppPermissionRequest Scope="http://sharepoint/taxonomy" Right="Read" />
+    <AppPermissionRequest Scope="http://sharepoint/content/tenant" Right="FullControl" />
+  </AppPermissionRequests>
+</App>
