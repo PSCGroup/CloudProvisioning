@@ -45,6 +45,12 @@ namespace CloudProvisioningWebJob
                     ,
                     SiteTemplatesListTitle = "Site Templates"
                 };
+
+                //Provision sites
+                spf.ProvisionSites(ctx, SiteProvisioningFactory.SiteType.SiteCollection);
+
+                //Provision subsites
+                spf.ProvisionSites(ctx, SiteProvisioningFactory.SiteType.Subsite);
             }
 
             catch (Exception ex)
