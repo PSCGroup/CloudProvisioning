@@ -3,11 +3,11 @@
 <App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest"
      Name="CloudProvisioning"
      ProductID="{eb0614ce-4fcf-4d2c-82f3-3cee5ce05867}"
-     Version="1.0.0.1"
+     Version="1.0.0.2"
      SharePointMinVersion="16.0.0.0"
 >
   <Properties>
-    <Title>CloudProvisioning</Title>
+    <Title>PSC Client and Project Site Provisioning</Title>
     <StartPage>~remoteAppUrl/?{StandardTokens}&amp;SPHostTitle={HostTitle}</StartPage>
     <InstalledEventEndpoint>~remoteAppUrl/Services/AppEventReceiver.svc</InstalledEventEndpoint>
     <UninstallingEventEndpoint>~remoteAppUrl/Services/AppEventReceiver.svc</UninstallingEventEndpoint>
