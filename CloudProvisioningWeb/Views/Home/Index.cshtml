@@ -5,38 +5,89 @@
 
 }
 
-    <div class="jumbotron">
-        <h2>Client &amp; Project Site Provisioning</h2>
-        <p class="lead">Click below to execute the provisioning job manually.  This will not be available in the final application.</p>
-        <p>@Html.ActionLink("Provision Sites", "Provision", "Home", null, new { @class = "btn btn-default btn-large" })</p>
-    </div>
+<div class="jumbotron">
+    <h2>Client &amp; Project Site Provisioning</h2>
+    @*<p class="lead">Click below to execute the provisioning job manually.  This will not be available in the final application.</p>
+    <p>@Html.ActionLink("Provision Sites", "Provision", "Home", null, new { @class = "btn btn-default btn-large" })</p>*@
+    <p class="lead">Use the links below to manage provisioning.</p>
+</div>
 
 <div class="row">
     <div class="col-md-4">
-        <div style="height: 125px">
-            <h2>Client Site Collections</h2>
-            <p>Create and manage requests for client site collections.</p>
-        </div>
+        <div class="ms-vl-apptile ms-vl-apptilehover " id="appTile_ClientSiteCollections" onmouseover="javascript:if (typeof(showCalloutIcon) == 'function'){showCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}" onmouseout="if (typeof(hideCalloutIcon) == 'function'){javascript:hideCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}">
+            <div class="ms-vl-appimage">
+                <a tabindex="-1" class="ms-storefront-selectanchor ms-storefront-appiconspan ms-draggable" id="viewlistClientSiteCollections" href="@ViewBag.SiteCollectionsListUrl" dragid="27">
+                    <img class="ms-storefront-appiconimg" style="border: 0px currentColor;" alt="Project Subsites" src="~/Icons/LSiteIcon.png">
+                </a>
+            </div>
+            <div class="ms-vl-appinfo ms-vl-pointer">
+                <div>
+                    <div class="ms-vl-apptitleouter">
+                        <a title="Client Site Collections" class="ms-draggable ms-vl-apptitle ms-listLink" id="viewlist836bc3de-3d9f-451a-9c12-ff98ec3791bc" href="@ViewBag.SiteCollectionsListUrl" dragid="26">
+                            @ViewBag.SiteCollectionsListTitle
+                        </a>
+                    </div>
+                </div>
+                <div class="ms-metadata ms-vl-appstatus">
+                    <a title="Client Site Collections Description" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SiteCollectionsListUrl" dragid="26">
+                        @ViewBag.SiteCollectionsListDescription
+                    </a>
+                </div>
 
-        <p><a class="btn btn-default" href="@ViewBag.ClientSitesUrl">Manage client site collections &raquo;</a></p>
-        <hr/>
+            </div>
+        </div>
     </div>
     <div class="col-md-4">
-        <div style="height: 125px">
-            <h2>Project Sites</h2>
+        <div class="ms-vl-apptile ms-vl-apptilehover " id="appTile_ProjectSubsites" onmouseover="javascript:if (typeof(showCalloutIcon) == 'function'){showCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}" onmouseout="if (typeof(hideCalloutIcon) == 'function'){javascript:hideCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}">
+            <div class="ms-vl-appimage">
+                <a tabindex="-1" class="ms-storefront-selectanchor ms-storefront-appiconspan ms-draggable" id="viewlistProjectSubsites" href="@ViewBag.SubsitesListUrl" dragid="27">
+                    <img class="ms-storefront-appiconimg" style="border: 0px currentColor;" alt="Project Subsites" src="~/Icons/LSubsiteIcon.png">
 
-            <p>Create and manage requests for project sites.  Project sites must be created in client site collections.</p>
+                </a>
+            </div>
+            <div class="ms-vl-appinfo ms-vl-pointer">
+                <div>
+                    <div class="ms-vl-apptitleouter">
+                        <a title="Project Subsites" class="ms-draggable ms-vl-apptitle ms-listLink" id="viewlist836bc3de-3d9f-451a-9c12-ff98ec3791bc" href="@ViewBag.SubsitesListUrl" dragid="26">
+                            @ViewBag.SubsitesListTitle
+                        </a>
+                    </div>
+
+                </div>
+                <div class="ms-metadata ms-vl-appstatus">
+                    <a title="Project Subsites Description" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SubsitesListUrl" dragid="26">
+                        @ViewBag.SubsitesListDescription
+                    </a>
+                </div>
+
+            </div>
         </div>
-        <p><a class="btn btn-default" href="@ViewBag.ProjectSitesUrl">Manage project sites &raquo;</a></p>
-        <hr />
     </div>
-    <div class="col-md-4" >
-        <div style="height: 125px">
-            <h2>Site Templates</h2>
-            <p>Manage templates used by the provisioning routine</p>
+    <div class="col-md-4">
+        <div class="ms-vl-apptile ms-vl-apptilehover " id="appTile_SiteTemplates">
+            <div class="ms-vl-appimage">
+                <a tabindex="-1" class="ms-storefront-selectanchor ms-storefront-appiconspan ms-draggable" id="viewlistSiteTemplates" href="@ViewBag.SiteTemplatesListUrl" dragid="27">
+                    <img class="ms-storefront-appiconimg" style="border: 0px currentColor;" alt="Project Subsites" src="~/Icons/LTemplatesIcon.png">
+
+                </a>
+            </div>
+            <div class="ms-vl-appinfo ms-vl-pointer">
+                <div>
+                    <div class="ms-vl-apptitleouter">
+                        <a title="Site Templates" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SiteTemplatesListUrl" dragid="26">
+                            @ViewBag.SiteTemplatesListTitle
+                        </a>
+                    </div>
+
+                </div>
+                <div class="ms-metadata ms-vl-appstatus">
+                    <a title="Site Templates Description" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SiteTemplatesListUrl" dragid="26">
+                        @ViewBag.SiteTemplatesListDescription
+                    </a>
+                </div>
+
+            </div>
         </div>
-        <p><a class="btn btn-default" href="@ViewBag.SiteTemplatesUrl">Manage site templates &raquo;</a></p>
-        <hr />
     </div>
 </div>
 

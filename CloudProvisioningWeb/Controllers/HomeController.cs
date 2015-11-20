@@ -22,6 +22,11 @@ namespace CloudProvisioningWeb.Controllers
             {
                 if (ctx != null)
                 {
+
+                    string siteCollectionsListTitle = "Client Site Collections";
+                    string subsitesListTitle = "Project Subsites";
+                    string siteTemplatesListTitle = "Site Templates";
+
                     spUser = ctx.Web.CurrentUser;
                     var spWeb = ctx.Web;
                     ctx.Load(spUser, user => user.Title);
@@ -29,23 +34,32 @@ namespace CloudProvisioningWeb.Controllers
                     ctx.ExecuteQuery();
 
                     bool listsExist = AppInstallationHelper.RequiredListsExist(ctx);
-                    List clientSitesList = ctx.Web.Lists.GetByTitle("Client Sites");
-                    List projectSitesList = ctx.Web.Lists.GetByTitle("Project Sites");
-                    List siteTemplatesList = ctx.Web.Lists.GetByTitle("Site Templates");
-                    ctx.Load(clientSitesList, list => list.DefaultViewUrl);
-                    ctx.Load(projectSitesList, list => list.DefaultViewUrl);
-                    ctx.Load(siteTemplatesList, list => list.DefaultViewUrl);
+                    List siteCollectionsList = ctx.Web.Lists.GetByTitle(siteCollectionsListTitle);
+                    List subsitesList = ctx.Web.Lists.GetByTitle(subsitesListTitle);
+                    List siteTemplatesList = ctx.Web.Lists.GetByTitle(siteTemplatesListTitle);
+                    ctx.Load(siteCollectionsList, list => list.DefaultViewUrl, list=>list.Description);
+                    ctx.Load(subsitesList, list => list.DefaultViewUrl, list => list.Description);
+                    ctx.Load(siteTemplatesList, list => list.DefaultViewUrl, list => list.Description); 
                     ctx.ExecuteQuery();
 
                     string serverRelativeUrl = spWeb.ServerRelativeUrl;
 
-                    string clientSitesUrl = spWeb.Url +  clientSitesList.DefaultViewUrl.Replace(serverRelativeUrl, "");
-                    string projectSitesUrl = spWeb.Url +  projectSitesList.DefaultViewUrl.Replace(serverRelativeUrl, "");
-                    string siteTemplatesUrl = spWeb.Url + siteTemplatesList.DefaultViewUrl.Replace(serverRelativeUrl, "");
+                    string siteCollectionListUrl = spWeb.Url +  siteCollectionsList.DefaultViewUrl.Replace(serverRelativeUrl, "");
+                    string subsiteListUrl = spWeb.Url +  subsitesList.DefaultViewUrl.Replace(serverRelativeUrl, "");
+                    string siteTemplatesListUrl = spWeb.Url + siteTemplatesList.DefaultViewUrl.Replace(serverRelativeUrl, "");
 
-                    ViewBag.ClientSitesUrl = clientSitesUrl;
-                    ViewBag.ProjectSitesUrl = projectSitesUrl;
-                    ViewBag.SiteTemplatesUrl = siteTemplatesUrl;
+
+                    ViewBag.SiteCollectionsListUrl = siteCollectionListUrl;
+                    ViewBag.SubsitesListUrl = subsiteListUrl;
+                    ViewBag.SiteTemplatesListUrl = siteTemplatesListUrl;
+
+                    ViewBag.SiteCollectionsListTitle = siteCollectionsListTitle;
+                    ViewBag.SubsitesListTitle = subsitesListTitle;
+                    ViewBag.SiteTemplatesListTitle = siteTemplatesListTitle;
+
+                    ViewBag.SiteCollectionsListDescription = siteCollectionsList.Description;
+                    ViewBag.SubsitesListDescription = subsitesList.Description;
+                    ViewBag.SiteTemplatesListDescription = siteTemplatesList.Description;
 
                     ViewBag.ListsExist = listsExist;
                     ViewBag.UserName = spUser.Title;

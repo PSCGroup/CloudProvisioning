@@ -226,7 +226,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\RequestController.cs" />
     <Compile Include="Filters\SharePointContextFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -242,16 +241,24 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Gridmvc.css" />
+    <Content Include="Content\MyPSC.png" />
+    <Content Include="CustomActions\CustomActionDefinition.xml" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Icons\ISiteIcon.png" />
+    <Content Include="Icons\ISubsiteIcon.png" />
+    <Content Include="Icons\ITemplatesIcon.png" />
+    <Content Include="Icons\LSiteIcon.png" />
+    <Content Include="Icons\LSubsiteIcon.png" />
+    <Content Include="Icons\LTemplatesIcon.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Properties\webjobs-list.json" />
-    <Content Include="Grid.mvc.readme" />
     <None Include="Properties\PublishProfiles\CloudProvisioning.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="CustomActions\CustomActionScript.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />
     <Content Include="Scripts\gridmvc.min.js" />
@@ -268,8 +275,10 @@
     <Content Include="Scripts\spcontext.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Services\AppEventReceiver.svc" />
-    <Content Include="Templates\Client.xml" />
-    <Content Include="Templates\Project.xml" />
+    <Content Include="Templates\Client Site Collection.xml">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Templates\Project Subsite.xml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -286,12 +295,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Request\New.cshtml" />
-    <Content Include="Views\Request\Requests.cshtml" />
-    <Content Include="Views\Request\View.cshtml" />
     <Content Include="Views\Shared\_GridPager.cshtml" />
     <Content Include="Views\Shared\_Grid.cshtml" />
-    <Content Include="Views\Request\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

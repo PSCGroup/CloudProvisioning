@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <CustomAction
+    Id="CustomProvisioningTab"
+    Location="CommandUI.Ribbon.ListView"
+    RegistrationId="0x01"
+    RegistrationType="ContentType"
+    Sequence="100"
+    >
+    <CommandUIExtension>
+      <CommandUIDefinitions>
+        <CommandUIDefinition
+          Location="Ribbon.Tabs._children">
+          <Tab
+            Id="Ribbon.CustomRibbonTab"
+            Title="Site Provisioning"
+            Description="Manage site provisioning"
+            Sequence="501">
+            <Scaling
+              Id="Ribbon.CustomRibbonTab.Scaling">
+              <MaxSize
+                Id="Ribbon.CustomRibbonTab.MaxSize"
+                GroupId="Ribbon.CustomRibbonTab.ProvisioningCustomGroup"
+                Size="OneLargeTwoMedium"/>
+              <MaxSize
+                Id="Ribbon.CustomRibbonTab.TabTwoMaxSize"
+                GroupId="Ribbon.CustomRibbonTab.SiteActionsCustomGroup"
+                Size="TwoLarge" />
+              <Scale
+                Id="Ribbon.CustomRibbonTab.Scaling.CustomTabScaling"
+                GroupId="Ribbon.CustomRibbonTab.ProvisioningCustomGroup"
+                Size="OneLargeTwoMedium" />
+              <Scale
+                Id="Ribbon.CustomRibbonTab.Scaling.CustomSecondTabScaling"
+                GroupId="Ribbon.CustomRibbonTab.SiteActionsCustomGroup"
+                Size="TwoLarge" />
+            </Scaling>
+            <Groups Id="Ribbon.CustomRibbonTab.Groups">
+              <Group
+                Id="Ribbon.CustomRibbonTab.ProvisioningCustomGroup"
+                Description="Request or cancel site provisioning"
+                Title="Provisioning"
+                Sequence="52"
+                Template="Ribbon.Templates.CustomTemplate">
+                <Controls Id="Ribbon.CustomRibbonTab.ProvisioningCustomGroup.Controls">
+                  <Button
+                    Id="Ribbon.CustomRibbonTab.ProvisioningCustomGroup.Accept"
+                    Command="CustomRibbonTab.RequestCommand"
+                    Sequence="15"
+                    Image32by32="{SiteUrl}/_layouts/15/1033/Images/formatmap32x32.png?rev=23"
+                    Image32by32Top="-68"
+                    Image32by32Left="-272"
+                    Description="Queue this site for provisioning"
+                    LabelText="Request provisioning"
+                    TemplateAlias="REQ" />
+
+                  <Button
+                   Id="Ribbon.CustomRibbonTab.ProvisioningCustomGroup.Close"
+                   Command="CustomRibbonTab.CancelCommand"
+                   Sequence="19"
+                   Image32by32="{SiteUrl}/_layouts/15/1033/Images/formatmap32x32.png?rev=23"
+                   Image32by32Top="-0"
+                   Image32by32Left="-34"
+                   Description="Cancel the request to provision this site"
+                   LabelText="Cancel provisioning"
+                   TemplateAlias="CAN"/>
+
+                </Controls>
+              </Group>
+              <Group
+                Id="Ribbon.CustomRibbonTab.SiteActionsCustomGroup"
+                Description="Manage provisioned sites"
+                Title="Site Actions"
+                Sequence="53"
+                Template="Ribbon.Templates.CustomTemplate">
+                <Controls Id="Ribbon.CustomRibbonTab.SiteActionsCustomGroup.Controls">
+                  <Button
+                   Id="Ribbon.CustomRibbonTab.SiteActionsCustomGroup.Open"
+                   Command="CustomRibbonTab.OpenSiteCommand"
+                   Sequence="15"
+                   Image32by32="{SiteUrl}/_layouts/15/1033/Images/formatmap32x32.png?rev=23"
+                   Image32by32Top="-170"
+                   Image32by32Left="-138"
+                   Description="Navigate to the site"
+                   LabelText="Open site"
+                   TemplateAlias="OPEN"/>
+                </Controls>
+              </Group>
+            </Groups>
+          </Tab>
+        </CommandUIDefinition>
+        <CommandUIDefinition Location="Ribbon.Templates._children">
+          <GroupTemplate Id="Ribbon.Templates.CustomTemplate">
+            <Layout
+              Title="OneLargeTwoMedium"
+              LayoutTitle="OneLargeTwoMedium">
+              <Section Alignment="Top" Type="OneRow">
+                <Row>
+                  <ControlRef DisplayMode="Large" TemplateAlias="REQ" />
+                </Row>
+              </Section>
+              <Section Alignment="Top" Type="OneRow">
+                <Row>
+                  <ControlRef DisplayMode="Large" TemplateAlias="CAN" />
+                </Row>
+              </Section>
+            </Layout>
+            <Layout
+             Title="TwoLarge"
+             LayoutTitle="TwoLarge">
+              <Section Alignment="Top" Type="OneRow">
+                <Row>
+                  <ControlRef DisplayMode="Large" TemplateAlias="NEW" />
+                </Row>
+              </Section>
+              <Section Alignment="Top" Type="OneRow">
+                <Row>
+                  <ControlRef DisplayMode="Large" TemplateAlias="OPEN" />
+                </Row>
+              </Section>
+            </Layout>
+          </GroupTemplate>
+        </CommandUIDefinition>
+      </CommandUIDefinitions>
+      <CommandUIHandlers>
+        <CommandUIHandler
+          Command="CustomRibbonTab.RequestCommand"
+          CommandAction="javascript:UpdateProvisioningStatus('Requested');"
+          EnabledScript="javascript:EnableRequestProvisioning();" />
+        <CommandUIHandler
+          Command="CustomRibbonTab.OpenSiteCommand"
+          CommandAction="javascript:OpenSite();"
+          EnabledScript="javascript:EnableOpenSite();"/>
+        <CommandUIHandler
+          Command="CustomRibbonTab.CancelCommand"
+          CommandAction="javascript:UpdateProvisioningStatus('Canceled');"
+          EnabledScript="javascript:EnableCancelProvisioning();"
+          />
+      </CommandUIHandlers>
+    </CommandUIExtension>
+  </CustomAction>
+</Elements>

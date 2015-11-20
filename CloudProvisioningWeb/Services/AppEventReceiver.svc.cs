@@ -52,6 +52,8 @@ namespace CloudProvisioningWeb.Services
 
                 case SPRemoteEventType.AppInstalled:
                     {
+                        
+
                         using (ClientContext ctx = TokenHelper.CreateAppEventClientContext(properties, useAppWeb: false))
                         {
 
@@ -59,46 +61,55 @@ namespace CloudProvisioningWeb.Services
                             {
                                 if (ctx != null)
                                 {
+
+                                    //temp
+                                    //ctx.Web.RemovePropertyBagValue(Key);
+                                    //throw new Exception();
+
                                     if (!IsInstalling(ctx))
                                     {
                                         SetInstalling(true, ctx);
 
+                                        var web = ctx.Web;
+                                        ctx.Load(web, w => w.Url);
+                                        ctx.ExecuteQuery();
+
+                                        //Upload large icons
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LSiteIcon.png");
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LSubsiteIcon.png");
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LTemplatesIcon.png");
+
+                                        //Upload small icons - get reference to URLs
+                                        string scIconPath = AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\ISiteIcon.png");
+                                        string subIconPath = AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\ISubsiteIcon.png");
+                                        string templatesIconPath = AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\ITemplatesIcon.png");
+
                                         //Create template library
-                                        AppInstallationHelper.CreateTemplateLibrary(ctx);
-
-                                        //Upload sample team sites template
-                                        //Dictionary<string, string> fieldValues_SampleTemplate = new Dictionary<string, string>();
-                                        //fieldValues_SampleTemplate.Add("BaseTemplate", "STS#0");
-                                        //fieldValues_SampleTemplate.Add("SiteDescription", "A sample custom template based on the Team site.");
-                                        //fieldValues_SampleTemplate.Add("Title", "Sample Team Site");
-
-                                        //Upload PSC client site template
-                                        //AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\SampleTemplate.xml", fieldValues_SampleTemplate);
-
+                                        AppInstallationHelper.CreateTemplateLibrary(ctx, templatesIconPath);
 
                                         Dictionary<string, string> fieldValues_PSCClientTemplate = new Dictionary<string, string>();
                                         fieldValues_PSCClientTemplate.Add("BaseTemplate", "STS#0");
                                         fieldValues_PSCClientTemplate.Add("SiteDescription", "A PSC client site collection.");
-                                        fieldValues_PSCClientTemplate.Add("Title", "PSC Client Site Collection");
 
-                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\Client.xml", fieldValues_PSCClientTemplate);
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\Client Site Collection.xml", fieldValues_PSCClientTemplate);
 
 
                                         //Upload PSC project site template
                                         Dictionary<string, string> fieldValues_PSCProjectTemplate = new Dictionary<string, string>();
                                         fieldValues_PSCProjectTemplate.Add("BaseTemplate", "STS#0");
                                         fieldValues_PSCProjectTemplate.Add("SiteDescription", "A PSC project sub-site beneath a PSC Client site collection.");
-                                        fieldValues_PSCProjectTemplate.Add("Title", "PSC Project Sub-Site");
 
-                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\Project.xml", fieldValues_PSCProjectTemplate);
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Templates", "Templates\\Project Subsite.xml", fieldValues_PSCProjectTemplate);
 
+                                        //Create Client Site Collections list
+                                        AppInstallationHelper.CreateSiteCollectionList(ctx, scIconPath);
 
+                                        //Create Project Subsites list
+                                        AppInstallationHelper.CreateSubsiteList(ctx, subIconPath);
 
-                                        //Create client sites list
-                                        AppInstallationHelper.CreateClientSiteList(ctx);
-
-                                        //Create project sites list
-                                        AppInstallationHelper.CreateProjectSiteList(ctx);
+                                        //Install custom actions
+                                        AppInstallationHelper.AddCustomRibbonAction(ctx, "CustomActions", "CustomActionScript.js", "CustomActionDefinition.xml", "Client Site Collections", "Project Subsites");
+                                        
 
                                         SetInstalling(false, ctx);
                                         ctx.Web.RemovePropertyBagValue(Key);
@@ -140,13 +151,10 @@ namespace CloudProvisioningWeb.Services
 
                             try
                             {
-                                bool deleteListsOnUninstall = Convert.ToBoolean(ConfigurationManager.AppSettings["DeleteListsOnUninstall"].ToString());
-
-                                if (deleteListsOnUninstall)
-                                {
-                                    AppInstallationHelper.DeleteLists(ctx);
-                                }
-
+                                
+                                AppInstallationHelper.DeleteLists(ctx);
+                                AppInstallationHelper.RemoveCustomActions(ctx);
+                                
                                 result.Status = SPRemoteEventServiceStatus.Continue;
 
                             }
