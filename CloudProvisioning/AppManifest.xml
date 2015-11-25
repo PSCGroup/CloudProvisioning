@@ -3,9 +3,11 @@
 <App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest"
      Name="CloudProvisioning"
      ProductID="{eb0614ce-4fcf-4d2c-82f3-3cee5ce05867}"
-     Version="1.0.0.2"
+     Version="1.2.0.0"
      SharePointMinVersion="16.0.0.0"
 >
+  
+  <!--IMPORTANT: The ~remoteAppUrl token MUST be replaced with hard-coded URLs if you deploy the provider-host components to Azure!-->
   <Properties>
     <Title>PSC Client and Project Site Provisioning</Title>
     <StartPage>~remoteAppUrl/?{StandardTokens}&amp;SPHostTitle={HostTitle}</StartPage>
@@ -14,10 +16,12 @@
   </Properties>
 
   <AppPrincipal>
-    <RemoteWebApplication ClientId="*" />
+    <RemoteWebApplication ClientId="7f2938ee-dfc7-4040-b91f-41f2a8102b09" />
   </AppPrincipal>
   <AppPermissionRequests AllowAppOnlyPolicy="true">
     <AppPermissionRequest Scope="http://sharepoint/taxonomy" Right="Read" />
     <AppPermissionRequest Scope="http://sharepoint/content/tenant" Right="FullControl" />
   </AppPermissionRequests>
+  <RemoteEndpoints>
+  </RemoteEndpoints>
 </App>

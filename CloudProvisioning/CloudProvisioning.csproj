@@ -22,7 +22,7 @@
     <WorkflowPartId>{d60b2d22-7214-4cff-a62d-9fd87c1c5c33}</WorkflowPartId>
     <CspkgPartId>{c15a8934-0796-4ce5-ab98-bee3327370ae}</CspkgPartId>
     <SqlPackagePartId>{c9623150-2bdd-46a6-ad4b-c0b5a00d6bdd}</SqlPackagePartId>
-    <ActivePublishProfile>CloudProvisioning</ActivePublishProfile>
+    <ActivePublishProfile>CloudProvisioning - Web Deploy</ActivePublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
