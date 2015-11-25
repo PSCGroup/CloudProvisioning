@@ -11,13 +11,50 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using Microsoft.SharePoint.Client.Publishing;
-
+using CloudProvisioning.Common;
 
 namespace CloudProvisioningWeb.Common
 {
 
     public class SiteProvisioningFactory
     {
+
+        //Contstants
+
+        /// <summary>
+        /// ListViewWebPart default XML
+        /// </summary>
+        private const string ListViewWebPartXml = "<webParts>" +
+                             "<webPart xmlns='http://schemas.microsoft.com/WebPart/v3'>" +
+                             "<metaData>" +
+                             "<type name='Microsoft.SharePoint.WebPartPages.XsltListViewWebPart, Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c' />" +
+                             "<importErrorMessage>Cannot import this Web Part.</importErrorMessage>" +
+                             "</metaData>" +
+                             "<data>" +
+                             "<properties>" +
+                             "<property name='ShowWithSampleData' type='bool'>False</property>" +
+                             "<property name='Default' type='string' />" +
+                             "<property name='NoDefaultStyle' type='string' null='true' />" +
+                             "<property name='CacheXslStorage' type='bool'>True</property>" +
+                             "<property name='ViewContentTypeId' type='string' />" +
+                             "<property name='XmlDefinitionLink' type='string' />" +
+                             "<property name='ManualRefresh' type='bool'>False</property>" +
+                             "<property name='ListUrl' type='string' />" +
+                             "<property name='ListId' type='System.Guid, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'>{0}</property>" +
+                             "<property name='TitleUrl' type='string'></property>" +
+                             "<property name='EnableOriginalValue' type='bool'>False</property>" +
+                             "<property name='Direction' type='direction'>NotSet</property>" +
+                             "<property name='ServerRender' type='bool'>False</property>" +
+                             "<property name='ViewFlags' type='Microsoft.SharePoint.SPViewFlags, Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c'>Html, TabularView, Hidden, Mobile</property>" +
+                             "<property name='AllowConnect' type='bool'>True</property>" +
+                             "<property name='ListName' type='string'>{0}</property>" +
+                             "<property name='ListDisplayName' type='string' />" +
+                             "<property name='Title' type='string'>{1}</property>" +
+                             "</properties>" +
+                             "</data>" +
+                             "</webPart>" +
+                             "</webParts>";
+
         //Class variables
         public string SiteCollectionRequestsListTitle
         {
@@ -31,7 +68,12 @@ namespace CloudProvisioningWeb.Common
             set;
         }
 
-        public string SiteTemplatesListTitle { get; set; }
+
+        public string SiteTemplatesListTitle 
+        { 
+            get; 
+            set; 
+        }
 
         public enum SiteType
         {
@@ -101,7 +143,7 @@ namespace CloudProvisioningWeb.Common
                             request["Processed"] = DateTime.Now;
                             request["ProvisioningStatus"] = "Error";
                             request["ErrorMessage"] = String.Format("Error of type {0}: {1}", ex.GetType(), ex.Message);
-                            //request["Error"] = true;
+                   
 
                             request.Update();
                             clientContext.ExecuteQueryRetry();
@@ -166,10 +208,12 @@ namespace CloudProvisioningWeb.Common
             var title = request["Title"].ToString();
             Console.WriteLine("Found site request for new site with title '{0}'...", title);
 
+
             //Update list item to indicate that we are processing the request
             request["ProvisioningStatus"] = "Provisioning...";
             request.Update();
             ctx.ExecuteQueryRetry();
+            Console.WriteLine("Updated list item with status 'Provisioning...'");
 
 
             string baseTemplate = string.Empty;
@@ -180,6 +224,8 @@ namespace CloudProvisioningWeb.Common
             string siteDescription = string.Empty;
 
             #region ProvisioningTemplate
+
+            Console.WriteLine("Loading template...");
 
             //Throw exception request doesn't have a template
             var templateLookupValue = request["SiteTemplate"] as FieldLookupValue;
@@ -194,6 +240,7 @@ namespace CloudProvisioningWeb.Common
             string url = templateFile["FileRef"].ToString();
             templateFileName = templateFile["FileLeafRef"].ToString();
             templateFileRelativeUrl = url;
+            
             baseTemplate = templateFile["BaseTemplate"].ToString();
 
             ProvisioningTemplate provisioningTemplate = GetProvisioningTemplate(ctx, this.SiteTemplatesListTitle, templateFileName);
@@ -231,10 +278,11 @@ namespace CloudProvisioningWeb.Common
 
 
             #endregion
+            
             //Log all parameters before continuing
             siteTitle = request["Title"].ToString();
             siteUrl = GetNewSiteUrl(request);
-
+            
 
             Console.WriteLine("Found site request.  Properties: {0}");
             Console.WriteLine("Base template: {0}", baseTemplate);
@@ -251,8 +299,9 @@ namespace CloudProvisioningWeb.Common
 
                 if (isSubSite)
                 {
-                    
-                    newWebUrl = CreateSubsite(ctx, parentWebUrl, siteUrl, baseTemplate, siteTitle, "", provisioningTemplate);
+                    //Additional owners are added to parent site Owners group because sub-sites inherit security
+                    string additionalOwnerEmail = GetProjectLeaderEmail(ctx, request);
+                    newWebUrl = CreateSubsite(ctx, parentWebUrl, siteUrl, baseTemplate, siteTitle, "", additionalOwnerEmail, provisioningTemplate);
                     
                 }
                 else
@@ -268,6 +317,7 @@ namespace CloudProvisioningWeb.Common
 
                 request["ProvisioningStatus"] = "Provisioned";
                 request["LinkToProvisionedSite"] = linkToSite;
+                request["ErrorMessage"] = "";
 
                 request.Update();
 
@@ -298,6 +348,17 @@ namespace CloudProvisioningWeb.Common
                 //Bubble up
                 throw;
             }
+        }
+
+
+        private string GetProjectLeaderEmail(ClientContext ctx, ListItem request)
+        {
+            ctx.Load(request, r => r["ProjectLeader"]);
+            ctx.ExecuteQueryRetry();
+
+            FieldUserValue fuv = (FieldUserValue)request["ProjectLeader"];
+
+            return fuv.Email;
         }
 
         /// <summary>
@@ -378,7 +439,7 @@ namespace CloudProvisioningWeb.Common
         /// <param name="siteDescription"></param>
         /// <param name="template"></param>
         /// <returns></returns>
-        private static string CreateSubsite(ClientContext ctx, string parentWebFullUrl, string url, string template, string title, string description, ProvisioningTemplate provisioningTemplate = null)
+        private static string CreateSubsite(ClientContext ctx, string parentWebFullUrl, string url, string template, string title, string description, string additionalOwnerEmail = "", ProvisioningTemplate provisioningTemplate = null)
         {
             string newWebUrl = string.Empty;
 
@@ -399,7 +460,7 @@ namespace CloudProvisioningWeb.Common
                     if (!parentWebCtx.WebExistsFullUrl(parentWebUrlUrl + "/" + url))
                     {
 
-                        var newWeb = parentWebCtx.Web.CreateWeb(
+                        var newWeb = web.CreateWeb(
                             new OfficeDevPnP.Core.Entities.SiteEntity()
                             {
                                 Title = title,
@@ -428,12 +489,25 @@ namespace CloudProvisioningWeb.Common
                             //Apply template
                             newWeb.ApplyProvisioningTemplate(provisioningTemplate, applyingInfo);
 
-
-                            //Post-template changes
+                            //
                             ApplyPostTemplateModifications(newWeb.Url, SiteType.Subsite);
 
                             //Add to parent web quick launch
                             web.AddNavigationNode(newWeb.Title, new Uri(newWeb.Url), "Projects", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+
+                            //Add additional owners to parent web
+                            if (!String.IsNullOrEmpty(additionalOwnerEmail))
+                            {
+                                parentWebCtx.Load(web, w => w.SiteGroups);
+                                parentWebCtx.ExecuteQuery();
+
+
+                                var group = web.SiteGroups.GetByName("PSC Owners");
+                                var user = web.EnsureUser(additionalOwnerEmail);
+                                group.Users.AddUser(user);
+                                web.Update();
+                                parentWebCtx.ExecuteQueryRetry();
+                            }
 
                         }
                         
@@ -447,6 +521,38 @@ namespace CloudProvisioningWeb.Common
             }
             return newWebUrl;
 
+
+        }
+
+        private static void UploadAssets(ClientContext ctx, Web web, bool rethrow = false)
+        {
+            Console.WriteLine("Begin file upload...");
+            try
+            {
+                // Get the path to the file which we are about to deploy
+                string file = System.Web.Hosting.HostingEnvironment.MapPath(string.Format("~/{0}", "Content/MyPSC.png"));
+                Console.WriteLine("Attempting to upload file {0}...", file);
+                //Get site assets library
+                List assetLibrary = web.GetListByTitle("Site Assets");
+                ctx.Load(assetLibrary, a => a.RootFolder);
+
+                // Use CSOM to uplaod the file in
+                FileCreationInformation newFile = new FileCreationInformation();
+                newFile.Content = System.IO.File.ReadAllBytes(file);
+                newFile.Url = "MyPSC.png";
+                newFile.Overwrite = true;
+                Microsoft.SharePoint.Client.File uploadFile = assetLibrary.RootFolder.Files.Add(newFile);
+                ctx.Load(uploadFile);
+                ctx.ExecuteQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error uploading file: {0}" + ex.Message);
+                if (rethrow)
+                {
+                    throw;
+                }
+            }
 
         }
 
@@ -469,23 +575,69 @@ namespace CloudProvisioningWeb.Common
                 {
                     UpdateQuickLaunch(ctx, web, SiteType.SiteCollection);
                     UpdateSecurity(ctx, web);
+                    UpdateHomePage(ctx, web, SiteType.SiteCollection);
+                    UploadAssets(ctx, web);
                 }
 
-                //Site (child)
+                //Subsite (child)
                 else
                 {
                     UpdateQuickLaunch(ctx, web, SiteType.Subsite);
-
+                    UpdateHomePage(ctx, web, SiteType.Subsite);
+                    
                 }
             }
             
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="web"></param>
+        private static void UpdateHomePage(ClientContext ctx, Web web, SiteType siteType)
+        {
+            ctx.Load(web, w => w.Url);
+            ctx.ExecuteQueryRetry();
+            string pageUrl = "Home.aspx";
+
+            //Update page layout
+            web.AddLayoutToWikiPage("SitePages", OfficeDevPnP.Core.WikiPageLayout.OneColumn, pageUrl);
+
+            //Site collection (parent)
+            if (siteType == SiteType.SiteCollection)
+            {
+                AddListViewWebPartToPage(ctx, web, "Contacts", pageUrl, 1, 1);
+                AddListViewWebPartToPage(ctx, web, "Shared Documents", pageUrl, 1, 1);
+            }
+
+            //Subsite (child)
+            else
+            {
+
+                AddListViewWebPartToPage(ctx, web, "Shared Documents", pageUrl, 1, 1);
+                AddListViewWebPartToPage(ctx, web, "RAID Log", pageUrl, 1, 1);
+                AddListViewWebPartToPage(ctx, web, "Contacts", pageUrl, 1, 1);
+                AddListViewWebPartToPage(ctx, web, "Calendar", pageUrl, 1, 1);
+            }
+        }
+
+        private static void AddListViewWebPartToPage(ClientContext ctx, Web web, string listTitle, string pageName, int row, int col)
+        {
+            List list = web.GetListByTitle(listTitle);
+            ctx.Load(list, l => l.Id, l => l.Title);
+            ctx.ExecuteQueryRetry();
+
+            OfficeDevPnP.Core.Entities.WebPartEntity wp = new OfficeDevPnP.Core.Entities.WebPartEntity
+            {
+                WebPartIndex = 2,
+                WebPartTitle = list.Title,
+                WebPartZone = "Left", //Not sure if we need this
+                WebPartXml = String.Format(ListViewWebPartXml, list.Id, list.Title)
+            };
+
+
+
+            web.AddWebPartToWikiPage("SitePages", wp, pageName, row, col, true);
+
+        }
+
+
         private static void UpdateSecurity(ClientContext ctx, Web web)
         {
 
@@ -497,7 +649,42 @@ namespace CloudProvisioningWeb.Common
             web.Update();
             ctx.ExecuteQueryRetry();
 
-            
+            Group defaultOwners = web.SiteGroups.GetByName(web.Title + " Owners");
+            Group defaultMembers = web.SiteGroups.GetByName(web.Title + " Members");
+            Group defaultVisitors = web.SiteGroups.GetByName(web.Title + " Visitors");
+
+
+            if (defaultOwners != null)
+                web.SiteGroups.Remove(defaultOwners);
+            if (defaultMembers != null)
+                web.SiteGroups.Remove(defaultMembers);
+            if (defaultVisitors != null)
+                web.SiteGroups.Remove(defaultVisitors);
+
+            try
+            {
+                web.Update();
+                ctx.ExecuteQueryRetry();
+            }
+            catch (Exception)
+            {
+                //It's OK-- group doesn't exist
+            }
+        }
+
+
+        private static string GetSiteNotebookUrl(ClientContext ctx, Web web)
+        {
+            ctx.Load(web, w => w.Url, w=>w.Title);
+            ctx.ExecuteQueryRetry();
+            return web.Url + "/SiteAssets/" + web.Title + " Notebook";
+        }
+
+        private static string GetSiteContentsUrl(ClientContext ctx, Web web)
+        {
+            ctx.Load(web, w => w.Url);
+            ctx.ExecuteQueryRetry();
+            return web.Url + "/_layouts/15/viewlsts.aspx";
         }
 
         private static void UpdateQuickLaunch(ClientContext ctx, Web web, SiteType siteType)
@@ -505,6 +692,8 @@ namespace CloudProvisioningWeb.Common
 
             ctx.Load(web, w => w.ParentWeb);
 
+
+            //Site Collection (parent)
             if (siteType == SiteType.SiteCollection)
             {
                 web.DeleteAllNavigationNodes(OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
@@ -513,10 +702,12 @@ namespace CloudProvisioningWeb.Common
                 web.AddNavigationNode(web.Title, new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
                 web.AddNavigationNode("Projects", new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
                 AddListToQuickLaunch(ctx, web, "Shared Documents", web.Title);
-                AddListToQuickLaunch(ctx, web, "Calendar", web.Title);
                 AddListToQuickLaunch(ctx, web, "Contacts", web.Title);
-
+                web.AddNavigationNode("Notebook", new Uri(GetSiteNotebookUrl(ctx, web)), web.Title, OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+                web.AddNavigationNode("Site Contents", new Uri(GetSiteContentsUrl(ctx, web)), web.Title, OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
             }
+
+            //Subsite (child)
             else
             {
                 //Navigation settings
@@ -528,11 +719,13 @@ namespace CloudProvisioningWeb.Common
                 web.AddNavigationNode(web.Title, new Uri(web.Url), "", OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
                 AddListToQuickLaunch(ctx, web, "Shared Documents", web.Title);
                 AddListToQuickLaunch(ctx, web, "RAID Log", web.Title);
-                //AddListToQuickLaunch(ctx, web, "Internal Tasks", web.Title);
                 AddListToQuickLaunch(ctx, web, "Calendar", web.Title);
                 AddListToQuickLaunch(ctx, web, "Contacts", web.Title);
+                web.AddNavigationNode("Notebook", new Uri(GetSiteNotebookUrl(ctx, web)), web.Title, OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
+                web.AddNavigationNode("Site Contents", new Uri(GetSiteContentsUrl(ctx, web)), web.Title, OfficeDevPnP.Core.Enums.NavigationType.QuickLaunch);
 
             }
+
 
         }
 
@@ -569,6 +762,7 @@ namespace CloudProvisioningWeb.Common
 
             //get the current user to set as owner
             var currUser = ctx.Web.CurrentUser;
+            
             ctx.Load(currUser);
             ctx.ExecuteQuery();
 
@@ -583,7 +777,7 @@ namespace CloudProvisioningWeb.Common
                 var properties = new SiteCreationProperties()
                 {
                     Url = webUrl,
-                    Owner = currUser.Email,
+                    Owner = "cnjohnson@psclistens.com", // currUser.Email,
                     Title = title,
                     Template = template,
                     StorageMaximumLevel = 100,

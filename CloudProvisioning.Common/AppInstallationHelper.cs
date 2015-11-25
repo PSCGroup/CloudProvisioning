@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Web;
+using System.Xml.Linq;
 
 namespace CloudProvisioningWeb.Common
 {
@@ -14,25 +16,69 @@ namespace CloudProvisioningWeb.Common
     {
 
         /// <summary>
+        /// Name used for the custom ribbon action installed for the Site Collections request list.
+        /// </summary>
+        private const string SiteCollRibbonActionName = "Provisioning_SiteCollectionRibbon";
+        
+        /// <summary>
+        /// Name used for the custom ribbon action installed for the Subsites request list.
+        /// </summary>
+        private const string SubsiteRibbonActionName = "Provisioning_SubsiteRibbon";
+
+        /// <summary>
+        /// Name used for the custom ScriptLink action that deploys a JavaScript script reference for all pages on this web
+        /// Note: this can only be scoped to a web and CANNOT be scoped to a content type, unlike the ribbon actions above
+        /// </summary>
+        private const string JsLinkActionName = "Provisioning_SiteCollectionLink";
+
+        /// <summary>
         /// The list used to request subsites will have this title
         /// </summary>
-        private const string SiteCollectionListTitle = "Client Sites";
+        public static string SiteCollectionListTitle = "Site Collections";
+
+        /// <summary>
+        /// Description for the site collections list
+        /// </summary>
+        public static string SiteCollectionListDescription = "Manage requests for parent site collections";
         
         /// <summary>
         /// The list used to request subsites will be created with this title
         /// </summary>
-        private const string SubsiteListTitle = "Project Sites";
+        public static string SubsiteListTitle = "Subsites";
+
+        /// <summary>
+        /// Description for the subsites list
+        /// </summary>
+        public static string SubsiteListDescription = "Manage requests for subsites of parent site collections.";
         
         /// <summary>
         /// The library used to store site templates will be created with this title
         /// </summary>
-        private const string SiteTemplateListTitle = "Site Templates";
+        public static string SiteTemplateListTitle = "Site Templates";
 
         /// <summary>
-        /// List fields for Site Collections list
+        /// Description for the site templates library
+        /// </summary>
+        public static string SiteTemplateListDescription = "Manage site templates used to provision site collections and subsites.";
+
+        public static void SetListDetails(string siteCollectionListTitle, string siteCollectionListDescription,
+            string subsiteListTitle, string subsiteListDescription,
+            string siteTemplateListTitle, string siteTemplateListDescription)
+        {
+            SiteCollectionListTitle = siteCollectionListTitle;
+            SiteCollectionListDescription = siteCollectionListDescription;
+            SubsiteListTitle = subsiteListTitle;
+            SubsiteListDescription = subsiteListDescription;
+            SiteTemplateListTitle = siteTemplateListTitle;
+            SiteTemplateListDescription = siteTemplateListDescription;
+
+        }
+
+        /// <summary>
+        /// List fields for site provisioning lists
         /// If desired, modify display names and descriptions to fit a specific use case
         /// </summary>
-        private static class SiteCollectionsListFields
+        private static class SharedListFields
         {
 
             public static string Abbreviation = "<Field Name=\"Abbreviation\" DisplayName = \"Abbreviation\" Description=\"The abbreviation for the client or project name, to be used for the URL of the new site; this is the part after the slash (/).  Should not contain spaces.  If a value for this is not provided, the client or project name will be used with hyphens (-) replacing spaces.\""
@@ -48,59 +94,46 @@ namespace CloudProvisioningWeb.Common
                 + " Type=\"Lookup\" List=\"" + SiteTemplateListTitle + "\" ShowField=\"Title\" ID=\"{3DE91360-8235-4F5B-BBE2-59F592FC5B35}\" Required=\"TRUE\"/>";
 
             public static string LinkToProvisionedSite = "<Field Name=\"LinkToProvisionedSite\" DisplayName=\"Link to Site\" Description=\"Click here to open the site.\""
-                + " Type=\"URL\" Format=\"Hyperlink\" ID=\"{210C37AC-A2BC-4463-9862-B54D443FB4AF}\" ShowInEditForm=\"TRUE\" ShowInNewForm=\"FALSE\"/>";
+                + " Type=\"URL\" Format=\"Hyperlink\" ID=\"{210C37AC-A2BC-4463-9862-B54D443FB4AF}\" ShowInEditForm=\"FALSE\" ShowInNewForm=\"FALSE\"/>";
 
             public static string ProvisioningStatus = "<Field Name=\"ProvisioningStatus\" DisplayName=\"Provisioning Status\" Description=\"This status is updated by the provisioning engine once a request is submitted.\""
-                + " Type=\"Choice\" ID=\"{E24E549F-44A6-403A-B86A-0EFD88719611}\" ShowInEditForm=\"TRUE\" ShowInNewForm=\"FALSE\"><CHOICES>"
+                + " Type=\"Choice\" ID=\"{E24E549F-44A6-403A-B86A-0EFD88719611}\" ShowInEditForm=\"FALSE\" ShowInNewForm=\"FALSE\"><CHOICES>"
                     + "<CHOICE>New (not requested)</CHOICE>"
                     + "<CHOICE>Requested</CHOICE>"
                     + "<CHOICE>Provisioning...</CHOICE>"
                     + "<CHOICE>Provisioned</CHOICE>"
+                    + "<CHOICE>Canceled</CHOICE>"
                     + "<CHOICE>Error</CHOICE>"
                 + "</CHOICES><Default>New (not requested)</Default></Field>";
         }
 
+
+        private static class SiteCollectionListFields
+        {
+            public static string SiteCollectionOwner = "<Field Name=\"SiteOwner\" DisplayName = \"Site Collection Owner\" Description=\"The administrator who should be set as the primary owner of this site collection.\""
+                + " Type=\"User\" ID=\"{d048f2ec-ef31-4a79-8ad2-3c729bccca29\" ShowField=\"ImnName\" UserSelectionMode=\"PeopleOnly\" Required=\"TRUE\"/>";
+
+        }
+
         /// <summary>
-        /// List fields for Project Sites list
+        /// List fields for Project Subsites list
         /// If desired, modify display names and descriptions to fit a specific use case
         /// </summary>
         private static class SubsiteListFields
         {
 
-            public static string Abbreviation = "<Field Name=\"Abbreviation\" DisplayName = \"Abbreviation\" Description=\"The abbreviation for the client or project name, to be used for the URL of the new site; this is the part after the slash (/).  Should not contain spaces.  If a value for this is not provided, the client or project name will be used with hyphens (-) replacing spaces.\""
-                + " Type=\"Text\" ID=\"{DF7C4DF8-7CC4-405C-BD7A-7575EDCE06A6}\" Required=\"FALSE\"/>";
-
-            public static string SiteOwner = "<Field Name=\"SiteOwner\" DisplayName = \"Project Leader\" Description=\"The Project Leader for this project.  This person will receive a notification when the project site has been provisioned.\""
+            public static string ProjectLeader = "<Field Name=\"ProjectLeader\" DisplayName = \"Project Leader\" Description=\"The Project Leader for this project.  This person will receive a notification when the project site has been provisioned.\""
                 + " Type=\"User\" ID=\"{A0D54CE0-438F-42C9-99DA-A5E9961DB0A6}\" ShowField=\"ImnName\" UserSelectionMode=\"PeopleOnly\" Required=\"TRUE\"/>";
 
-            public static string SiteMembers = "<Field Name=\"SiteMembers\" DisplayName = \"Project Team\" Description=\"The Project Team for this project, not including the Project Leader.  These people will receive notifications when the project site has been provisioned.\""
-                + " Type=\"User\" ID=\"{C14697AD-FDDA-4EBB-9A61-AB7B00B3B3B3}\" ShowField=\"ImnName\" UserSelectionMode=\"PeopleOnly\" Required=\"FALSE\"/>";
-
-            public static string Processed = "<Field Name=\"Processed\" DisplayName = \"Processed by Provisioning Job\" Description=\"The date and time this site was processed by the provisioning job.\""
-                + " Type=\"DateTime\" ID=\"{D1B8CF60-9159-43A8-A9D5-8BA36C803285}\" Required=\"FALSE\" ShowInEditForm=\"FALSE\" ShowInNewForm=\"FALSE\"/>";
-
-            public static string ErrorMessage = "<Field Name=\"ErrorMessage\" DisplayName = \"Error\" Description=\"If an error occurs during site provisioning, it will be logged here.\""
-                + " Type=\"Text\" ID=\"{A04E7624-EB0A-4F46-A4C0-4703AA585E9A}\" Required=\"FALSE\" ShowInEditForm=\"FALSE\" ShowInNewForm=\"FALSE\"/>";
-
-            public static string SiteTemplate = "<Field Name=\"SiteTemplate\" DisplayName = \"Site Template\" Description=\"The site template to use for this site.\""
-                + " Type=\"Lookup\" List=\"" + SiteTemplateListTitle + "\" ShowField=\"Title\" ID=\"{6D89533E-2F72-4593-A954-E5A3B70EB966}\" Required=\"TRUE\"/>";
+            public static string ProjectTeam = "<Field Name=\"ProjectTeam\" DisplayName = \"Project Team\" Description=\"The Project Team for this project, not including the Project Leader.  These people will receive notifications when the project site has been provisioned.\""
+                + " Type=\"UserMulti\" Mult=\"TRUE\" ID=\"{C14697AD-FDDA-4EBB-9A61-AB7B00B3B3B3}\" ShowField=\"ImnName\" UserSelectionMode=\"PeopleOnly\" Required=\"FALSE\"/>";
 
             public static string ParentWeb = "<Field Name=\"ParentWeb\" DisplayName = \"Client Site\" Description=\"The client site underneath which to create this project site.\""
                 + " Type=\"Lookup\" List=\"" + SiteCollectionListTitle + "\" ShowField=\"Title\" ID=\"{FBCB6409-11FB-48F0-A4EA-16171DE4D3F0}\" Required=\"TRUE\"/>";
 
-            public static string LinkToProvisionedSite = "<Field Name=\"LinkToProvisionedSite\" DisplayName=\"Link to Site\" Description=\"Click here to open the site.\""
-                + " Type=\"URL\" Format=\"Hyperlink\" ID=\"{9E133A6A-B61E-4F91-98BC-86AD505F000C}\" ShowInEditForm=\"TRUE\" ShowInNewForm=\"FALSE\"/>";
-
-            public static string ProvisioningStatus = "<Field Name=\"ProvisioningStatus\" DisplayName=\"Provisioning Status\" Description=\"This status is updated by the provisioning engine once a request is submitted.\""
-                + " Type=\"Choice\" ID=\"{A166B609-22B3-41AF-A88F-BAE6E01D9FF9}\" ShowInEditForm=\"TRUE\" ShowInNewForm=\"FALSE\"><CHOICES>"
-                    + "<CHOICE>New (not requested)</CHOICE>"
-                    + "<CHOICE>Requested</CHOICE>"
-                    + "<CHOICE>Provisioning...</CHOICE>"
-                    + "<CHOICE>Provisioned</CHOICE>"
-                    + "<CHOICE>Error</CHOICE>"
-                + "</CHOICES><Default>New (not requested)</Default></Field>";
         }
 
+        
 
         /// <summary>
         /// Library fields for Site Templates library
@@ -122,18 +155,24 @@ namespace CloudProvisioningWeb.Common
                 + "<CHOICE>BLOG#0</CHOICE>" //Blog
                 + "<CHOICE>WIKI#0</CHOICE>" //Wiki
                 + "</CHOICES><Default>STS#0</Default></Field>";
+
+            //public static string ApplyAdditionalConfiguration = "<Field Name=\"ApplyAdditionalConfiguration\" DisplayName = \"Apply Additional Configuration?\"" 
+            //    + " Description=\"If yes, sites provisioned using this template will have additional configurations applied that are not specified in the template file, including security, home page, navigation and branding configurations.\""
+            //    + " Type=\"Boolean\" ID=\"{9C88731C-783F-4054-BB92-35C6CCA1FA8A}\" Required=\"FALSE\"><Default>1</Default></Field>";
         }
 
 
         /// <summary>
-        /// Uploads a file provisioned as an asset with this app, to a document library on the host web
+        /// 
         /// </summary>
         /// <param name="clientContext"></param>
         /// <param name="libraryTitle"></param>
         /// <param name="pathToFile"></param>
         /// <param name="fieldValues"></param>
-        public static void UploadFileToLibrary(ClientContext clientContext, string libraryTitle, string pathToFile, Dictionary<string, string> fieldValues)
+        /// <returns></returns>
+        public static string UploadFileToLibrary(ClientContext clientContext, string libraryTitle, string pathToFile, Dictionary<string, string> fieldValues = null)
         {
+            string serverRelativeUrl = string.Empty;
 
             Web web = clientContext.Web;
 
@@ -148,30 +187,37 @@ namespace CloudProvisioningWeb.Common
             string fileUrl = Path.Combine(appDomain, pathToFile);
             newFile.Content = System.IO.File.ReadAllBytes(fileUrl);
             newFile.Url = System.IO.Path.GetFileName(fileUrl);
-
-
+            newFile.Overwrite = true;
 
             // Add file to the library.
             try
             {
+                
                 Microsoft.SharePoint.Client.File uploadFile = library.RootFolder.Files.Add(newFile);
                 clientContext.Load(uploadFile);
 
-                //Set metadata
-                foreach (var field in fieldValues.Keys)
+                if (fieldValues != null)
                 {
-                    uploadFile.ListItemAllFields[field] = fieldValues[field];
+                    //Set metadata
+                    foreach (var field in fieldValues.Keys)
+                    {
+                        uploadFile.ListItemAllFields[field] = fieldValues[field];
+                    }
+
+                    uploadFile.ListItemAllFields.Update();
                 }
-
-                uploadFile.ListItemAllFields.Update();
-
                 clientContext.ExecuteQuery();
+                serverRelativeUrl = uploadFile.ServerRelativeUrl;
+
             }
             catch (ServerException ex)
             {
+                throw new Exception(String.Format("Error uploading file '{0}' to library '{1}': {2}", pathToFile, libraryTitle, ex.Message));
                 //Swallow; file already exists and we don't want to overwrite
                 //TODO: Log
             }
+
+            return serverRelativeUrl;
         }
 
         /// <summary>
@@ -239,7 +285,7 @@ namespace CloudProvisioningWeb.Common
         /// Creates a library for storing site template XML files.
         /// </summary>
         /// <param name="ctx"></param>
-        public static void CreateTemplateLibrary(ClientContext ctx)
+        public static void CreateTemplateLibrary(ClientContext ctx, string iconUrl = "")
         {
             if (ctx != null)
             {
@@ -269,6 +315,21 @@ namespace CloudProvisioningWeb.Common
                     {
                         templateLibrary = web.Lists.GetByTitle(SiteTemplateListTitle);
 
+                        //Set list description
+                        ctx.Load(templateLibrary, t => t.Description, t => t.ImageUrl);
+                        templateLibrary.Description = SiteTemplateListDescription;
+
+                        //Set list icon
+                        if (!String.IsNullOrEmpty(iconUrl))
+                        {
+                            templateLibrary.ImageUrl = iconUrl;
+                            templateLibrary.Update();
+
+
+                        }
+
+                        ctx.ExecuteQuery();
+                        
                         //Add all fields to be created to this collection
                         StringCollection fields = new StringCollection{
                         SiteTemplateLibraryFields.Description,
@@ -316,27 +377,26 @@ namespace CloudProvisioningWeb.Common
 
         }
 
+
         /// <summary>
         /// Creates a list for storing site requests
         /// </summary>
         /// <param name="ctx"></param>
-        public static void CreateClientSiteList(ClientContext ctx)
+        public static void CreateSiteCollectionList(ClientContext ctx, string iconUrl = "")
         {
             if (ctx != null)
             {
                 Web web = ctx.Web;
-                List clientSiteList;
+                List siteCollectionList;
 
-                if (!ctx.Web.ListExists("Client Sites"))
+                if (!ctx.Web.ListExists(SiteCollectionListTitle))
                 {
 
                     //Try creating the list
                     try
                     {
 
-                        clientSiteList = web.CreateList(ListTemplateType.GenericList, SiteCollectionListTitle, false);
-                        //clientSiteList.Hidden = true;
-                        //clientSiteList.Update();
+                        siteCollectionList = web.CreateList(ListTemplateType.GenericList, SiteCollectionListTitle, false);
                         ctx.ExecuteQuery();
                     }
 
@@ -350,12 +410,26 @@ namespace CloudProvisioningWeb.Common
                     //Get reference to newly-created or existing list
                     try
                     {
-                        clientSiteList = web.Lists.GetByTitle(SiteCollectionListTitle);
-                        
+                        siteCollectionList = web.Lists.GetByTitle(SiteCollectionListTitle);
+
+                        ctx.Load(siteCollectionList, l => l.Description, l => l.ImageUrl);
+                        ctx.ExecuteQuery();
+
+                        siteCollectionList.Description = SiteCollectionListDescription;
+
+                        //Set list icon
+                        if (!String.IsNullOrEmpty(iconUrl))
+                        {
+                            siteCollectionList.ImageUrl = iconUrl;
+                            siteCollectionList.Update();
+                        }
+
+                        ctx.ExecuteQuery();
+
                         //Create URL field (must be unique; EnforceUniqueValues must be enabled programmatically)
                         try
                         {
-                            Field urlField = clientSiteList.CreateField(SiteCollectionsListFields.Abbreviation);
+                            Field urlField = siteCollectionList.CreateField(SharedListFields.Abbreviation);
                             urlField.EnforceUniqueValues = true;
                             urlField.Indexed = true;
                             ctx.Load(urlField);
@@ -370,11 +444,11 @@ namespace CloudProvisioningWeb.Common
                         //Add all fields to be created to this collection
                         StringCollection fields = new StringCollection {
                         
-                        SiteCollectionsListFields.Processed
-                        , SiteCollectionsListFields.LinkToProvisionedSite
-                        , SiteCollectionsListFields.ProvisioningStatus
-                        //, ClientSitesListFields.ErrorOccurred
-                        , SiteCollectionsListFields.ErrorMessage
+                        SharedListFields.Processed
+                        , SiteCollectionListFields.SiteCollectionOwner
+                        , SharedListFields.LinkToProvisionedSite
+                        , SharedListFields.ProvisioningStatus
+                        , SharedListFields.ErrorMessage
                         
                     };
 
@@ -383,7 +457,7 @@ namespace CloudProvisioningWeb.Common
                         {
                             try
                             {
-                                clientSiteList.CreateField(field);
+                                siteCollectionList.CreateField(field);
                             }
                             catch (Exception ex)
                             {
@@ -403,9 +477,9 @@ namespace CloudProvisioningWeb.Common
 
                                 var id = siteTemplatesLibrary.Id;
                                 var lookupStr = "List=\"{" + id.ToString() + "}\"";
-                                var fieldDef = SiteCollectionsListFields.SiteTemplate.Replace("List=\"" + SiteTemplateListTitle + "\"", lookupStr);
+                                var fieldDef = SharedListFields.SiteTemplate.Replace("List=\"" + SiteTemplateListTitle + "\"", lookupStr);
 
-                                clientSiteList.CreateField(fieldDef);
+                                siteCollectionList.CreateField(fieldDef);
                             }
                             catch (Exception ex)
                             {
@@ -418,31 +492,39 @@ namespace CloudProvisioningWeb.Common
 
 
                         //List default view
-                        ctx.Load(clientSiteList, l => l.DefaultView, l=>l.Fields);
+                        ctx.Load(siteCollectionList, l => l.DefaultView, l=>l.Fields, l=>l.ContentTypes);
+                        ctx.ExecuteQuery();
 
-                        clientSiteList.DefaultView.ViewFields.Add("Abbreviation");
-                        clientSiteList.DefaultView.ViewFields.Add("Site Template");
-                        clientSiteList.DefaultView.ViewFields.Add("Provisioning Status");
-                        clientSiteList.DefaultView.ViewFields.Add("Processed by Provisioning Job");
-                        clientSiteList.DefaultView.ViewFields.Add("Link to Site");
-                        clientSiteList.DefaultView.ViewFields.Add("Error");
-                        clientSiteList.DefaultView.Update();
-                        clientSiteList.Update();
+                        siteCollectionList.DefaultView.ViewFields.Add("Abbreviation");
+                        siteCollectionList.DefaultView.ViewFields.Add("Site Template");
+                        siteCollectionList.DefaultView.ViewFields.Add("Provisioning Status");
+                        siteCollectionList.DefaultView.ViewFields.Add("Processed by Provisioning Job");
+                        siteCollectionList.DefaultView.ViewFields.Add("Link to Site");
+                        siteCollectionList.DefaultView.ViewFields.Add("Error");
+                        siteCollectionList.DefaultView.Update();
+
+                        
+
+                        ContentType ct = siteCollectionList.ContentTypes[0];
+                        siteCollectionList.ContentTypesEnabled = true;
+                        ct.Name = "Client Site Collection";
+                        ct.Update(false);
+                        ctx.Load(ct);
+                        siteCollectionList.Update();
                         ctx.ExecuteQueryRetry();
+
+                        
                     }
                     catch (Exception ex)
                     {
-                        //List doesn't exist; throw
-                        //throw new Exception("The Client Sites list could not be created: " + ex.Message);
+                        //Bubble up;
+                        throw;
                     }
                 }
                 else
                 {
-                    //throw new Exception("There is already a list called Client Sites on this site.  Please remove the list and try installing again.");
+                    //Log and move on.
                 }
-
-
-
 
             }
 
@@ -464,12 +546,12 @@ namespace CloudProvisioningWeb.Common
         /// Creates a list for storing site requests
         /// </summary>
         /// <param name="ctx"></param>
-        public static void CreateProjectSiteList(ClientContext ctx)
+        public static void CreateSubsiteList(ClientContext ctx, string iconUrl = "")
         {
             if (ctx != null)
             {
                 Web web = ctx.Web;
-                List projectSiteList;
+                List subsiteList;
 
                 if (!web.ListExists(SubsiteListTitle))
                 {
@@ -478,9 +560,7 @@ namespace CloudProvisioningWeb.Common
                     try
                     {
 
-                        projectSiteList = web.CreateList(ListTemplateType.GenericList, SubsiteListTitle, false);
-                        //projectSiteList.Hidden = true;
-                        //projectSiteList.Update();
+                        subsiteList = web.CreateList(ListTemplateType.GenericList, SubsiteListTitle, false);
                         ctx.ExecuteQuery();
                     }
 
@@ -493,32 +573,32 @@ namespace CloudProvisioningWeb.Common
                     //Get reference to newly-created or existing list
                     try
                     {
-                        projectSiteList = web.Lists.GetByTitle(SubsiteListTitle);
+                        subsiteList = web.Lists.GetByTitle(SubsiteListTitle);
 
-                        //Create URL field (must be unique; EnforceUniqueValues must be enabled programmatically)
-                        try
+                        ctx.Load(subsiteList, l => l.Description, l => l.ImageUrl);
+                        ctx.ExecuteQuery();
+
+                        subsiteList.Description = SubsiteListDescription;
+
+                        //Set list icon
+                        if (!String.IsNullOrEmpty(iconUrl))
                         {
-                            Field urlField = projectSiteList.CreateField(SubsiteListFields.Abbreviation);
-                            urlField.EnforceUniqueValues = true;
-                            urlField.Indexed = true;
-                            ctx.Load(urlField);
-                            urlField.Update();
-                            ctx.ExecuteQuery();
+                            subsiteList.ImageUrl = iconUrl;
+                            subsiteList.Update();
                         }
-                        catch (Exception ex)
-                        {
-                            //TODO: Log
-                        }
+
+                        ctx.ExecuteQuery();
+
 
                         //Add all fields to be created to this collection
                         StringCollection fields = new StringCollection {
-                        
-                        SubsiteListFields.SiteOwner
-                        , SubsiteListFields.SiteMembers
-                        , SubsiteListFields.Processed
-                        , SubsiteListFields.LinkToProvisionedSite
-                        , SubsiteListFields.ProvisioningStatus
-                        , SubsiteListFields.ErrorMessage
+                        SharedListFields.Abbreviation
+                        , SubsiteListFields.ProjectLeader
+                        , SubsiteListFields.ProjectTeam
+                        , SharedListFields.Processed
+                        , SharedListFields.LinkToProvisionedSite
+                        , SharedListFields.ProvisioningStatus
+                        , SharedListFields.ErrorMessage
                         
                         };
 
@@ -527,7 +607,7 @@ namespace CloudProvisioningWeb.Common
                         {
                             try
                             {
-                                projectSiteList.CreateField(field);
+                                subsiteList.CreateField(field);
 
                             }
                             catch (Exception ex)
@@ -543,14 +623,14 @@ namespace CloudProvisioningWeb.Common
                             try
                             {
                                 var siteTemplatesLibrary = web.Lists.GetByTitle(SiteTemplateListTitle);
-                                ctx.Load(siteTemplatesLibrary);
+                                ctx.Load(siteTemplatesLibrary, s=> s.Id);
                                 ctx.ExecuteQuery();
 
                                 var id = siteTemplatesLibrary.Id;
                                 var lookupStr = "List=\"{" + id.ToString() + "}\"";
-                                var fieldDef = SubsiteListFields.SiteTemplate.Replace("List=\"" + SiteTemplateListTitle + "\"", lookupStr);
+                                var fieldDef = SharedListFields.SiteTemplate.Replace("List=\"" + SiteTemplateListTitle + "\"", lookupStr);
 
-                                projectSiteList.CreateField(fieldDef);
+                                subsiteList.CreateField(fieldDef);
                             }
                             catch (Exception ex)
                             {
@@ -569,14 +649,14 @@ namespace CloudProvisioningWeb.Common
                             try
                             {
                                 var clientSitesLibrary = web.Lists.GetByTitle(SiteCollectionListTitle);
-                                ctx.Load(clientSitesLibrary);
+                                ctx.Load(clientSitesLibrary, c=> c.Id);
                                 ctx.ExecuteQuery();
                                 var id = clientSitesLibrary.Id;
 
                                 var lookupStr = "List=\"{" + id.ToString() + "}\"";
                                 var fieldDef = SubsiteListFields.ParentWeb.Replace("List=\"" + SiteCollectionListTitle + "\"", lookupStr);
 
-                                projectSiteList.CreateField(fieldDef);
+                                subsiteList.CreateField(fieldDef);
 
                             }
 
@@ -588,7 +668,7 @@ namespace CloudProvisioningWeb.Common
                         }
                         else
                         {
-                            //throw new Exception("Client Sites list doesn't exist.");
+                            //Log and move on
                         }
 
 
@@ -596,29 +676,40 @@ namespace CloudProvisioningWeb.Common
 
 
                         //List default view
-                        ctx.Load(projectSiteList, l => l.DefaultView, l => l.Fields);
+                        ctx.Load(subsiteList, l => l.DefaultView, l => l.Fields, l=>l.ContentTypes);
 
-                        projectSiteList.DefaultView.ViewFields.Add("Abbreviation");
-                        projectSiteList.DefaultView.ViewFields.Add("Site Template");
-                        projectSiteList.DefaultView.ViewFields.Add("Project Leader");
-                        projectSiteList.DefaultView.ViewFields.Add("Project Team");
-                        projectSiteList.DefaultView.ViewFields.Add("Provisioning Status");
-                        projectSiteList.DefaultView.ViewFields.Add("Processed by Provisioning Job");
-                        projectSiteList.DefaultView.ViewFields.Add("Link to Site");
-                        projectSiteList.DefaultView.ViewFields.Add("Error");
-                        projectSiteList.DefaultView.Update();
-                        projectSiteList.Update();
-                        ctx.ExecuteQueryRetry();
+                        subsiteList.DefaultView.ViewFields.Add("Abbreviation");
+                        subsiteList.DefaultView.ViewFields.Add("Client Site");
+                        subsiteList.DefaultView.ViewFields.Add("Site Template");
+                        subsiteList.DefaultView.ViewFields.Add("Project Leader");
+                        subsiteList.DefaultView.ViewFields.Add("Project Team");
+                        subsiteList.DefaultView.ViewFields.Add("Provisioning Status");
+                        subsiteList.DefaultView.ViewFields.Add("Processed by Provisioning Job");
+                        subsiteList.DefaultView.ViewFields.Add("Link to Site");
+                        subsiteList.DefaultView.ViewFields.Add("Error");
+                        subsiteList.DefaultView.Update();
+                        subsiteList.Update();
+                        ctx.ExecuteQuery();
+
+                        ContentType ct = subsiteList.ContentTypes[0];
+                        subsiteList.ContentTypesEnabled = true;
+                        ct.Name = "Project Subsite";
+                        ct.Update(false);
+                        ctx.Load(ct);
+                        subsiteList.Update();
+                        ctx.ExecuteQuery();
+
+                       
+                      
                     }
                     catch (Exception ex)
                     {
-                        //List doesn't exist; throw
-                        //throw new Exception("The Project Sites list could not be created: " + ex.Message);
+                        throw;
                     }
                 }
                 else
                 {
-                    // throw new Exception("There is already a list called Project Sites on this site.  Please remove the list and try installing again.");
+                    //Log and move on
                 }
 
 
@@ -627,6 +718,225 @@ namespace CloudProvisioningWeb.Common
 
             }
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private static XElement GetCustomActionXmlNode(string directory, string fileName)
+        {
+
+            //Source: https://msdn.microsoft.com/en-us/library/office/dn904536.aspx
+            // The next line of code causes an exception to be thrown for files larger than 2 MB.
+            string appDomain = HttpRuntime.AppDomainAppPath;
+
+            string pathToFile = directory + "\\" + fileName;
+
+            string fileUrl = Path.Combine(appDomain, pathToFile);
+  
+
+            XNamespace ns = "http://schemas.microsoft.com/sharepoint/";
+
+            var xdoc = XDocument.Load(fileUrl);
+            var customActionNode = xdoc.Element(ns + "Elements").Element(ns + "CustomAction");
+            return customActionNode;
+        }
+
+        public static void RemoveCustomActions(ClientContext ctx)
+        {
+            Web web = ctx.Web;
+            ctx.Load(web, w=>w.UserCustomActions);
+            ctx.ExecuteQuery();
+
+            var existingActions = web.UserCustomActions;
+            ctx.Load(existingActions);
+
+            // Execute our uploads and initialzie the existingActions collection
+            ctx.ExecuteQuery();
+
+
+            //Clean up existing user action (make sure we don't duplicate
+            var actions = existingActions.ToArray();
+
+            // Clean up existing actions that we may have deployed
+            foreach (var existingAction in actions)
+            {
+                if (existingAction.Name.Equals(SiteCollRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
+                    || existingAction.Name.Equals(SubsiteRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
+                    || existingAction.Name.Equals(JsLinkActionName, StringComparison.InvariantCultureIgnoreCase))
+                    existingAction.DeleteObject();
+            }
+            ctx.ExecuteQuery();
+        
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="web"></param>
+        /// <param name="directory"></param>
+        /// <param name="scriptFileName"></param>
+        /// <param name="xmlDefinitionFileName"></param>
+        /// <param name="siteCollectionListTitle"></param>
+        /// <param name="subsiteListTitle"></param>
+        public static void AddCustomRibbonAction(ClientContext ctx, string directory, string scriptFileName, string xmlDefinitionFileName, string siteCollectionListTitle, string subsiteListTitle)
+        {
+            Web web = ctx.Web;
+
+            #region Get list content type IDs
+            List siteCollectionList = web.GetListByTitle(siteCollectionListTitle);
+            ctx.Load(siteCollectionList, p => p.Id, p => p.ContentTypes);
+            ctx.ExecuteQuery();
+
+            var siteCollContentTypeId = siteCollectionList.ContentTypes[0].StringId;
+
+            List subsiteList = web.GetListByTitle(subsiteListTitle);
+            ctx.Load(subsiteList, p => p.Id, p => p.ContentTypes);
+            ctx.ExecuteQuery();
+
+            var subsiteContentTypeId = subsiteList.ContentTypes[0].StringId;
+
+            #endregion
+
+            #region Prerequisite script custom action
+            List assetLibrary = web.GetListByTitle("Site Assets");
+            ctx.Load(assetLibrary, a => a.RootFolder);
+
+
+            //Source: https://msdn.microsoft.com/en-us/library/office/dn904536.aspx
+            // The next line of code causes an exception to be thrown for files larger than 2 MB.
+            string appDomain = HttpRuntime.AppDomainAppPath;
+
+            string pathToFile = directory + "\\" + scriptFileName;
+            
+            string fileUrl = Path.Combine(appDomain, pathToFile);
+  
+
+            // Use CSOM to uplaod the file in
+            FileCreationInformation newFile = new FileCreationInformation();
+            newFile.Content = System.IO.File.ReadAllBytes(fileUrl);
+            newFile.Url = scriptFileName;
+            newFile.Overwrite = true;
+            Microsoft.SharePoint.Client.File uploadFile = assetLibrary.RootFolder.Files.Add(newFile);
+            ctx.Load(uploadFile);
+            ctx.ExecuteQuery();
+
+            // Clean up existing actions that we may have deployed
+
+            var existingActions = web.UserCustomActions;
+            ctx.Load(existingActions);
+
+            // Execute our uploads and initialzie the existingActions collection
+            ctx.ExecuteQuery();
+
+
+            //Clean up existing user action (make sure we don't duplicate
+            var actions = existingActions.ToArray();
+            foreach (var existingAction in actions)
+            {
+                if (existingAction.Name.Equals(JsLinkActionName, StringComparison.InvariantCultureIgnoreCase))
+                    existingAction.DeleteObject();
+            }
+            ctx.ExecuteQuery();
+
+            string linkUrl = assetLibrary.RootFolder.ServerRelativeUrl + "/" + scriptFileName;
+
+            StringBuilder scripts = new StringBuilder(@"
+                var headID = document.getElementsByTagName('head')[0]; 
+                var");
+
+            scripts.AppendFormat(@"
+                newScript = document.createElement('script');
+                newScript.type = 'text/javascript';
+                newScript.src = '{0}';
+                headID.appendChild(newScript);", linkUrl);
+            string scriptBlock = scripts.ToString();
+
+            //Build custom JS link
+            string scriptLocation = "ScriptLink";
+            int scriptSequence = 100;
+            //string scriptBlock = @"document.write('<script type=""text/JavaScript"" src=""" + assetLibrary.RootFolder.ServerRelativeUrl + "/" + scriptFileName + @""" />');";
+
+            //Site
+            UserCustomAction jsLink = web.UserCustomActions.Add();
+            jsLink.Location = scriptLocation;
+            jsLink.Sequence = scriptSequence;
+            jsLink.ScriptBlock = scriptBlock;
+
+            jsLink.Name = JsLinkActionName;
+
+            jsLink.Update();
+            ctx.ExecuteQuery();
+
+
+            #endregion
+
+            #region Ribbon custom action
+            ctx.Load(web, w => w.UserCustomActions);
+
+            XNamespace ns = "http://schemas.microsoft.com/sharepoint/";
+
+            //Get XML element from single XML definition that we will use to create two identical custom actions
+            var customActionNode = GetCustomActionXmlNode(directory, xmlDefinitionFileName);
+            var commandUIExtensionNode = customActionNode.Element(ns + "CommandUIExtension");
+            var xmlContent = commandUIExtensionNode.ToString();
+            var location = customActionNode.Attribute("Location").Value;
+
+            var registrationTypeString = customActionNode.Attribute("RegistrationType").Value;
+            var registrationType = (UserCustomActionRegistrationType)Enum.Parse(typeof(UserCustomActionRegistrationType), registrationTypeString);
+
+            var sequence = 1000;
+            if (customActionNode.Attribute(ns + "Sequence") != null)
+            {
+                sequence = Convert.ToInt32(customActionNode.Attribute(ns + "Sequence").Value);
+            }
+
+
+            // Clean up existing actions that we may have deployed
+            foreach (var existingAction in actions)
+            {
+                if (existingAction.Name.Equals(SiteCollRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
+                    || existingAction.Name.Equals(SubsiteRibbonActionName, StringComparison.InvariantCultureIgnoreCase))
+                    existingAction.DeleteObject();
+            }
+            ctx.ExecuteQuery();
+
+
+            //Site collection list ribbon
+            var siteCollRibbonAction = ctx.Web.UserCustomActions.Add();
+            siteCollRibbonAction.RegistrationId = siteCollContentTypeId; // registrationId-- use the content type ID
+            siteCollRibbonAction.Name = SiteCollRibbonActionName;
+
+
+            siteCollRibbonAction.Location = location;
+            siteCollRibbonAction.CommandUIExtension = xmlContent; // CommandUIExtension xml
+            siteCollRibbonAction.RegistrationType = registrationType;
+            siteCollRibbonAction.Sequence = sequence;
+
+            siteCollRibbonAction.Update();
+            ctx.Load(siteCollRibbonAction);
+            ctx.ExecuteQuery();
+
+            //Subsite list ribbon
+            var subsiteRibbonAction = ctx.Web.UserCustomActions.Add();
+            subsiteRibbonAction.RegistrationId = subsiteContentTypeId; // registrationId-- use the content type ID
+            subsiteRibbonAction.Name = SubsiteRibbonActionName;
+
+
+            subsiteRibbonAction.Location = location;
+            subsiteRibbonAction.CommandUIExtension = xmlContent; // CommandUIExtension xml
+            subsiteRibbonAction.RegistrationType = registrationType;
+            subsiteRibbonAction.Sequence = sequence;
+
+            subsiteRibbonAction.Update();
+            ctx.Load(subsiteRibbonAction);
+            ctx.ExecuteQuery();
+
+            #endregion
         }
 
     }
