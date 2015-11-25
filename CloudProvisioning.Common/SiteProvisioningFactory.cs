@@ -530,7 +530,9 @@ namespace CloudProvisioningWeb.Common
             try
             {
                 // Get the path to the file which we are about to deploy
-                string file = System.Web.Hosting.HostingEnvironment.MapPath(string.Format("~/{0}", "Content/MyPSC.png"));
+                //string file = System.Web.Hosting.HostingEnvironment.MapPath(string.Format("~/{0}", "Content/MyPSC.png"));
+                Console.WriteLine("Environment web root path: {0}", Environment.GetEnvironmentVariable("WEBROOT_PATH"));
+                string file = Environment.GetEnvironmentVariable("WEBROOT_PATH") + "\\Content\\MyPSC.png";
                 Console.WriteLine("Attempting to upload file {0}...", file);
                 //Get site assets library
                 List assetLibrary = web.GetListByTitle("Site Assets");
