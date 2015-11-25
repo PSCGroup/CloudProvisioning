@@ -3,9 +3,6 @@
   "WebJobs": [
     {
       "filePath": "../CloudProvisioningWebJob/CloudProvisioningWebJob.csproj"
-    },
-    {
-      "filePath": "../WebJob1/WebJob1.csproj"
     }
   ]
 }

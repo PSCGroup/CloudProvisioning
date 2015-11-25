@@ -1,16 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
   <parameter name="IIS Web Application Name" description="" value="CloudProvisioning" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\DEV\\PSC\\Cloud\\CloudProvisioning\\CloudProvisioningWeb\\obj\\Debug\\Package\\PackageTmp$" />
-    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\DEV\\PSC\\Cloud\\CloudProvisioning\\CloudProvisioningWeb\\obj\\Debug\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\git\\PSC\\CloudProvisioning\\CloudProvisioningWeb\\obj\\Debug\\Package\\PackageTmp$" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\git\\PSC\\CloudProvisioning\\CloudProvisioningWeb\\obj\\Debug\\Package\\PackageTmp$" />
   </parameter>
   <parameter name="Add write permission to App_Data Folder" description="Add write permission to App_Data folder" value="CloudProvisioning/App_Data" tags="Hidden">
-    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\DEV\\PSC\\Cloud\\CloudProvisioning\\CloudProvisioningWeb\\obj\\Debug\\Package\\PackageTmp\\App_Data$" />
-  </parameter>
-  <parameter name="ClientId" description="Value for ClientId here." value="a9aa4819-d96e-4764-a846-25f1c48e0a1f" tags="applicationSettings">
-    <parameterEntry kind="XmlFile" scope="web.config$" match="/configuration/appSettings/add[@key='ClientId']/@value" />
-  </parameter>
-  <parameter name="ClientSecret" description="Value for ClientSecret here." value="F4O6b+FWuHsb9AalI37qyaWxBBsJ4dVt4Ino8Steo6g=" tags="applicationSettings">
-    <parameterEntry kind="XmlFile" scope="web.config$" match="/configuration/appSettings/add[@key='ClientSecret']/@value" />
+    <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\git\\PSC\\CloudProvisioning\\CloudProvisioningWeb\\obj\\Debug\\Package\\PackageTmp\\App_Data$" />
   </parameter>
 </parameters>

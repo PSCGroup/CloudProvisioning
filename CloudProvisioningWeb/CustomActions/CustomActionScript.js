@@ -12,7 +12,7 @@ function UpdateProvisioningStatus(val) {
         ctx.load(request);
         if (request != null) {
 
-            var c
+            var c;
             if (val == "Requested") {
                 c = confirm("Are you sure you want to request provisioning of this site?");
             }
@@ -21,6 +21,7 @@ function UpdateProvisioningStatus(val) {
             }
             if (c) {
                 request.set_item('ProvisioningStatus', val);
+                request.set_item('ErrorMessage', '');
                 request.update();
                 ctx.executeQueryAsync(Function.createDelegate(this, onUpdateSucceeded), Function.createDelegate(this, onUpdateFailed));
             }

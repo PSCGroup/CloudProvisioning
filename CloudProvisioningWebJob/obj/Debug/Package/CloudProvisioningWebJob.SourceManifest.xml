@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <sitemanifest>
-  <IisApp path="D:\DEV\PSC\Cloud\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp" managedRuntimeVersion="v4.0" />
-  <setAcl path="D:\DEV\PSC\Cloud\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp" setAclResourceType="Directory" />
-  <setAcl path="D:\DEV\PSC\Cloud\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
-  <setAcl path="D:\DEV\PSC\Cloud\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp\App_Data" setAclResourceType="Directory" setAclAccess="Write" />
+  <IisApp path="D:\git\PSC\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp" managedRuntimeVersion="v4.0" />
+  <setAcl path="D:\git\PSC\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp" setAclResourceType="Directory" />
+  <setAcl path="D:\git\PSC\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
+  <setAcl path="D:\git\PSC\CloudProvisioning\CloudProvisioningWebJob\obj\Debug\Package\PackageTmp\App_Data" setAclResourceType="Directory" setAclAccess="Write" />
 </sitemanifest>

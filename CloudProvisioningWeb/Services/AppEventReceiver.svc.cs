@@ -52,11 +52,8 @@ namespace CloudProvisioningWeb.Services
 
                 case SPRemoteEventType.AppInstalled:
                     {
-                        
-
                         using (ClientContext ctx = TokenHelper.CreateAppEventClientContext(properties, useAppWeb: false))
                         {
-
                             try
                             {
                                 if (ctx != null)
@@ -70,9 +67,16 @@ namespace CloudProvisioningWeb.Services
                                     {
                                         SetInstalling(true, ctx);
 
+                                        //Set values before installation based on web.config
+                                        
+
                                         var web = ctx.Web;
                                         ctx.Load(web, w => w.Url);
                                         ctx.ExecuteQuery();
+
+                                        //Set list instance details for installing, based on web.config
+                                        SetListInstanceDetails();
+
 
                                         //Upload large icons
                                         AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LSiteIcon.png");
@@ -151,6 +155,9 @@ namespace CloudProvisioningWeb.Services
 
                             try
                             {
+                                //Set list instance details for uninstalling, based on web.config
+                                SetListInstanceDetails();
+
                                 
                                 AppInstallationHelper.DeleteLists(ctx);
                                 AppInstallationHelper.RemoveCustomActions(ctx);
@@ -176,6 +183,51 @@ namespace CloudProvisioningWeb.Services
 
 
             return result;
+        }
+
+        private static void SetListInstanceDetails()
+        {
+            //Optionall retrieve list title and description settings from web.config
+            //Use class default values if not specified
+            try
+            {
+                //Site Collection list title
+                string siteCollListTitle = ConfigurationManager.AppSettings["SiteCollectionListTitle"];
+                if (!string.IsNullOrEmpty(siteCollListTitle))
+                    AppInstallationHelper.SiteCollectionListTitle = siteCollListTitle;
+
+                //Site Collection list description
+                string siteCollListDesc = ConfigurationManager.AppSettings["SiteCollectionListDescription"];
+                if (!string.IsNullOrEmpty(siteCollListDesc))
+                    AppInstallationHelper.SiteCollectionListDescription = siteCollListDesc;
+
+                //Subsite list title
+                string subsiteListTitle = ConfigurationManager.AppSettings["SubsiteListTitle"];
+                if (!string.IsNullOrEmpty(subsiteListTitle))
+                    AppInstallationHelper.SubsiteListTitle = subsiteListTitle;
+
+                //Subsite list description
+                string subsiteListDesc = ConfigurationManager.AppSettings["SubsiteListDescription"];
+                if (!string.IsNullOrEmpty(subsiteListDesc))
+                    AppInstallationHelper.SubsiteListDescription = subsiteListDesc;
+
+
+                //SiteTemplate list title
+                string siteTemplateListTitle = ConfigurationManager.AppSettings["SiteTemplateListTitle"];
+                if (!string.IsNullOrEmpty(siteTemplateListTitle))
+                    AppInstallationHelper.SiteTemplateListTitle = siteTemplateListTitle;
+
+                //siteTemplate list description
+                string siteTemplateListDesc = ConfigurationManager.AppSettings["SiteTemplateListDescription"];
+                if (!string.IsNullOrEmpty(siteTemplateListDesc))
+                    AppInstallationHelper.SiteTemplateListDescription = siteTemplateListDesc;
+
+            }
+            catch (System.Configuration.ConfigurationErrorsException ex)
+            {
+                //Do nothing; use default values
+                Console.Write(String.Format("An exception occurred reading values from the config file: {0}.  Default list titles and descriptions will be used.", ex.Message));
+            }
         }
 
         /// <summary>

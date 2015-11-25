@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 55px;
     padding-bottom: 20px;
 }
 
@@ -21,4 +21,23 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+/*Navbar fixes*/
+.navbar-fixed-top{
+    top:30px;
+}
+
+
+a.btn:visited{
+    color: inherit;
+}
+/*Hide some of the inherited SharePoint controls because we have a title anyway*/
+#chromeControl_bottomheader{
+    display:none !important;
+}
+
+#chrome_ctrl_placeholder{
+    position: fixed;
+    top:0;
 }

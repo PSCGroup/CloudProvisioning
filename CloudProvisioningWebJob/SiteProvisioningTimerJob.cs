@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Configuration;
 using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 using OfficeDevPnP.Core.Framework.TimerJobs;
@@ -39,11 +40,11 @@ namespace CloudProvisioningWebJob
 
                 SiteProvisioningFactory spf = new SiteProvisioningFactory
                 {
-                    SiteCollectionRequestsListTitle = "Client Sites"
+                    SiteCollectionRequestsListTitle = ConfigurationManager.AppSettings["SiteCollectionListTitle"]
                     ,
-                    SubsiteRequestsListTitle = "Project Sites"
+                    SubsiteRequestsListTitle = ConfigurationManager.AppSettings["SubsiteListTitle"]
                     ,
-                    SiteTemplatesListTitle = "Site Templates"
+                    SiteTemplatesListTitle = ConfigurationManager.AppSettings["SiteTemplateListTitle"]
                 };
 
                 //Provision sites

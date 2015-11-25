@@ -1,26 +1,93 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+    var installed = ViewBag.ListsExist;
+
+
 }
 
 <div class="jumbotron">
-    <h2>Welcome @ViewBag.UserName!</h2>
-    <p class="lead"><b>Apps for SharePoint - </b>Embracing web standards, the new cloud app model gives you maximum choice and flexibility to build a new class of apps for SharePoint using familiar languages, tools, and hosting services.</p>
-    <p><a href="http://dev.office.com" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+    <h2>Client &amp; Project Site Provisioning</h2>
+    @*<p class="lead">Click below to execute the provisioning job manually.  This will not be available in the final application.</p>
+    <p>@Html.ActionLink("Provision Sites", "Provision", "Home", null, new { @class = "btn btn-default btn-large" })</p>*@
+    <p class="lead">Use the links below to manage provisioning.</p>
 </div>
+
 <div class="row">
     <div class="col-md-4">
-        <h2>Overview</h2>
-        <p>SharePoint introduces a Cloud App Model that enables you to create apps. Learn what apps for SharePoint are, why you should build them, and the concepts that are fundamental to building them for SharePoint.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=294439">Learn more &raquo;</a></p>
+        <div class="ms-vl-apptile ms-vl-apptilehover " id="appTile_ClientSiteCollections" onmouseover="javascript:if (typeof(showCalloutIcon) == 'function'){showCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}" onmouseout="if (typeof(hideCalloutIcon) == 'function'){javascript:hideCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}">
+            <div class="ms-vl-appimage">
+                <a tabindex="-1" class="ms-storefront-selectanchor ms-storefront-appiconspan ms-draggable" id="viewlistClientSiteCollections" href="@ViewBag.SiteCollectionsListUrl" dragid="27">
+                    <img class="ms-storefront-appiconimg" style="border: 0px currentColor;" alt="Project Subsites" src="~/Icons/LSiteIcon.png">
+                </a>
+            </div>
+            <div class="ms-vl-appinfo ms-vl-pointer">
+                <div>
+                    <div class="ms-vl-apptitleouter">
+                        <a title="Client Site Collections" class="ms-draggable ms-vl-apptitle ms-listLink" id="viewlist836bc3de-3d9f-451a-9c12-ff98ec3791bc" href="@ViewBag.SiteCollectionsListUrl" dragid="26">
+                            @ViewBag.SiteCollectionsListTitle
+                        </a>
+                    </div>
+                </div>
+                <div class="ms-metadata ms-vl-appstatus">
+                    <a title="Client Site Collections Description" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SiteCollectionsListUrl" dragid="26">
+                        @ViewBag.SiteCollectionsListDescription
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
     <div class="col-md-4">
-        <h2>Samples</h2>
-        <p>Download apps for SharePoint code samples. New samples are added frequently in JavaScript, C#, and VB.NET.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=294440">Learn more &raquo;</a></p>
+        <div class="ms-vl-apptile ms-vl-apptilehover " id="appTile_ProjectSubsites" onmouseover="javascript:if (typeof(showCalloutIcon) == 'function'){showCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}" onmouseout="if (typeof(hideCalloutIcon) == 'function'){javascript:hideCalloutIcon('836bc3de-3d9f-451a-9c12-ff98ec3791bc');}">
+            <div class="ms-vl-appimage">
+                <a tabindex="-1" class="ms-storefront-selectanchor ms-storefront-appiconspan ms-draggable" id="viewlistProjectSubsites" href="@ViewBag.SubsitesListUrl" dragid="27">
+                    <img class="ms-storefront-appiconimg" style="border: 0px currentColor;" alt="Project Subsites" src="~/Icons/LSubsiteIcon.png">
+
+                </a>
+            </div>
+            <div class="ms-vl-appinfo ms-vl-pointer">
+                <div>
+                    <div class="ms-vl-apptitleouter">
+                        <a title="Project Subsites" class="ms-draggable ms-vl-apptitle ms-listLink" id="viewlist836bc3de-3d9f-451a-9c12-ff98ec3791bc" href="@ViewBag.SubsitesListUrl" dragid="26">
+                            @ViewBag.SubsitesListTitle
+                        </a>
+                    </div>
+
+                </div>
+                <div class="ms-metadata ms-vl-appstatus">
+                    <a title="Project Subsites Description" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SubsitesListUrl" dragid="26">
+                        @ViewBag.SubsitesListDescription
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
     <div class="col-md-4">
-        <h2>Developer training</h2>
-        <p>Learn about apps for SharePoint with this interactive course offering developer-focused how to training and walkthrough videos.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkID=294441">Learn more &raquo;</a></p>
+        <div class="ms-vl-apptile ms-vl-apptilehover " id="appTile_SiteTemplates">
+            <div class="ms-vl-appimage">
+                <a tabindex="-1" class="ms-storefront-selectanchor ms-storefront-appiconspan ms-draggable" id="viewlistSiteTemplates" href="@ViewBag.SiteTemplatesListUrl" dragid="27">
+                    <img class="ms-storefront-appiconimg" style="border: 0px currentColor;" alt="Project Subsites" src="~/Icons/LTemplatesIcon.png">
+
+                </a>
+            </div>
+            <div class="ms-vl-appinfo ms-vl-pointer">
+                <div>
+                    <div class="ms-vl-apptitleouter">
+                        <a title="Site Templates" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SiteTemplatesListUrl" dragid="26">
+                            @ViewBag.SiteTemplatesListTitle
+                        </a>
+                    </div>
+
+                </div>
+                <div class="ms-metadata ms-vl-appstatus">
+                    <a title="Site Templates Description" class="ms-draggable ms-vl-apptitle ms-listLink" href="@ViewBag.SiteTemplatesListUrl" dragid="26">
+                        @ViewBag.SiteTemplatesListDescription
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
+
