@@ -18,13 +18,16 @@
       </pnp:PropertyBagEntries>
       <pnp:Security>
         <pnp:AdditionalAdministrators>
-          <pnp:User Name="i:0#.f|membership|cnjohnson@psclistens.com" />
-          <pnp:User Name="i:0#.f|membership|mblumenthal@psclistens.com" />
+          <pnp:User Name="cnjohnson@psclistens.com" />
+          <pnp:User Name="mblumenthal@psclistens.com" />
+          <pnp:User Name="jbenes@psclistens.com" />
         </pnp:AdditionalAdministrators>
         <pnp:SiteGroups>
           <pnp:SiteGroup Title="PSC Owners" Description="These PSC users have full control of the client site and its project subsites." Owner="cnjohnson@psclistens.com">
             <pnp:Members>
               <pnp:User Name="cnjohnson@psclistens.com" />
+              <pnp:User Name="mblumenthal@psclistens.com" />
+              <pnp:User Name="jbenes@psclistens.com" />
             </pnp:Members>
           </pnp:SiteGroup>
           <pnp:SiteGroup Title="PSC Members" Description="These PSC users have contribute access to the client site and its project subsites." Owner="cnjohnson@psclistens.com">

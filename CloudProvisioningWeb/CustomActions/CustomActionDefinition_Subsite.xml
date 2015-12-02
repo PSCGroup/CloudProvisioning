@@ -6,6 +6,8 @@
     RegistrationId="0x01"
     RegistrationType="ContentType"
     Sequence="100"
+    Rights="EditListItems"
+    
     >
     <CommandUIExtension>
       <CommandUIDefinitions>
@@ -13,8 +15,8 @@
           Location="Ribbon.Tabs._children">
           <Tab
             Id="Ribbon.CustomRibbonTab"
-            Title="Site Provisioning"
-            Description="Manage site provisioning"
+            Title="Subsite Provisioning"
+            Description="Manage project subsite provisioning"
             Sequence="501">
             <Scaling
               Id="Ribbon.CustomRibbonTab.Scaling">

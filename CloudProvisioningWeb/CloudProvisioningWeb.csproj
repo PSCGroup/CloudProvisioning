@@ -243,7 +243,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Gridmvc.css" />
     <Content Include="Content\MyPSC.png" />
-    <Content Include="CustomActions\CustomActionDefinition.xml" />
+    <Content Include="CustomActions\CustomActionDefinition_SiteColl.xml" />
+    <Content Include="CustomActions\CustomActionDefinition_Subsite.xml" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

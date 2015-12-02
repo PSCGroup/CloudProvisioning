@@ -82,6 +82,9 @@ namespace CloudProvisioningWeb.Services
                                         AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LSiteIcon.png");
                                         AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LSubsiteIcon.png");
                                         AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\LTemplatesIcon.png");
+                                        
+                                        //Upload jQuery
+                                        AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Scripts\\jquery-1.10.2.min.js");
 
                                         //Upload small icons - get reference to URLs
                                         string scIconPath = AppInstallationHelper.UploadFileToLibrary(ctx, "Site Assets", "Icons\\ISiteIcon.png");
@@ -112,7 +115,7 @@ namespace CloudProvisioningWeb.Services
                                         AppInstallationHelper.CreateSubsiteList(ctx, subIconPath);
 
                                         //Install custom actions
-                                        AppInstallationHelper.AddCustomRibbonAction(ctx, "CustomActions", "CustomActionScript.js", "CustomActionDefinition.xml", "Client Site Collections", "Project Subsites");
+                                        AppInstallationHelper.AddCustomActions(ctx, "CustomActions", "CustomActionScript.js", "Client Site Collections", "CustomActionDefinition_SiteColl.xml", "Project Subsites", "CustomActionDefinition_Subsite.xml");
                                         
 
                                         SetInstalling(false, ctx);
