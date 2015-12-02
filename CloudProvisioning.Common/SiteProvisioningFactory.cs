@@ -69,10 +69,10 @@ namespace CloudProvisioningWeb.Common
         }
 
 
-        public string SiteTemplatesListTitle 
-        { 
-            get; 
-            set; 
+        public string SiteTemplatesListTitle
+        {
+            get;
+            set;
         }
 
         public enum SiteType
@@ -81,7 +81,7 @@ namespace CloudProvisioningWeb.Common
             Subsite
         }
 
-        
+
 
         /// <summary>
         /// Provisions sub-sites based on the request list items in the source web "Site Requests" list
@@ -143,7 +143,7 @@ namespace CloudProvisioningWeb.Common
                             request["Processed"] = DateTime.Now;
                             request["ProvisioningStatus"] = "Error";
                             request["ErrorMessage"] = String.Format("Error of type {0}: {1}", ex.GetType(), ex.Message);
-                   
+
 
                             request.Update();
                             clientContext.ExecuteQueryRetry();
@@ -162,7 +162,11 @@ namespace CloudProvisioningWeb.Common
             }
         }
 
-
+        /// <summary>
+        /// Get the escaped and formatted URL for the new site
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         private static string GetNewSiteUrl(ListItem request)
         {
             string newSiteUrl = string.Empty;
@@ -182,11 +186,11 @@ namespace CloudProvisioningWeb.Common
 
             if (!abbreviation.Contains(" ") && !string.IsNullOrEmpty(abbreviation))
             {
-                newSiteUrl = abbreviation.ReplaceInvalidUrlChars("-");
+                newSiteUrl = abbreviation.Replace(" ", "-").ReplaceInvalidUrlChars("-");
             }
             else
             {
-                newSiteUrl = siteTitle.ReplaceInvalidUrlChars("-");
+                newSiteUrl = siteTitle.Replace(" ", "-").ReplaceInvalidUrlChars("-");
             }
 
             return newSiteUrl;
@@ -223,16 +227,21 @@ namespace CloudProvisioningWeb.Common
             string siteUrl = string.Empty;
             string siteDescription = string.Empty;
 
+            //Get basic metadata for logging            
+            siteTitle = title;
+            siteUrl = GetNewSiteUrl(request);
+            
+
             #region ProvisioningTemplate
 
-            Console.WriteLine("Loading template...");
+            Console.WriteLine("Loading provisioning template...");
 
             //Throw exception request doesn't have a template
             var templateLookupValue = request["SiteTemplate"] as FieldLookupValue;
             if (templateLookupValue == null)
                 throw new Exception(String.Format("Request with title {0} does not have a value for the Site Template field.", title));
 
-
+           
             //Get provisioning template
             int id = templateLookupValue.LookupId;
             string lookupListTitle = "Site Templates";
@@ -242,6 +251,8 @@ namespace CloudProvisioningWeb.Common
             templateFileRelativeUrl = url;
             
             baseTemplate = templateFile["BaseTemplate"].ToString();
+
+
 
             ProvisioningTemplate provisioningTemplate = GetProvisioningTemplate(ctx, this.SiteTemplatesListTitle, templateFileName);
 
@@ -254,7 +265,7 @@ namespace CloudProvisioningWeb.Common
             //===========================================================
             //template = clientContext.Web.GetProvisioningTemplate();
             #endregion
-
+           
             #region ParentWeb
             string parentWebUrl = string.Empty;
 
@@ -262,35 +273,38 @@ namespace CloudProvisioningWeb.Common
             {
                 var parentSiteLookupValue = request["ParentWeb"] as FieldLookupValue;
                 if (parentSiteLookupValue == null)
-                    throw new Exception(String.Format("Subsite request with title {0} does not have a value for the Client Site field.", title));
+                    throw new Exception(String.Format("Subsite request with title {0} does not have a value for the parent site collection field.", title));
 
 
                 //Get provisioning template
                 int clientSiteItemId = parentSiteLookupValue.LookupId;
                 ListItem parentSiteListItem = GetListItemFromLookupList(ctx, clientSiteItemId, this.SiteCollectionRequestsListTitle);
                 ctx.Load(parentSiteListItem, p => p["LinkToProvisionedSite"]);
-
-                var parentWeb = parentSiteListItem["LinkToProvisionedSite"] as FieldUrlValue;
-                parentWebUrl = parentWeb.Url;
-
+                try
+                {
+                    var parentWeb = parentSiteListItem["LinkToProvisionedSite"] as FieldUrlValue;
+                    parentWebUrl = parentWeb.Url;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(String.Format("The parent site collection '{0}' for the requested subsite '{1}' has not been successfully provisioned.  Aborting subsite creation.", 
+                        parentSiteLookupValue.LookupValue, siteTitle));
+                }
                 isSubSite = true;
             }
 
 
             #endregion
             
-            //Log all parameters before continuing
-            siteTitle = request["Title"].ToString();
-            siteUrl = GetNewSiteUrl(request);
             
-
+            //Log all parameters before continuing
             Console.WriteLine("Found site request.  Properties: {0}");
             Console.WriteLine("Base template: {0}", baseTemplate);
             Console.WriteLine("Template file: {0}", templateFileRelativeUrl);
             Console.WriteLine("Template file name: {0}", templateFileName);
             Console.WriteLine("Requested title: {0}", siteTitle);
             Console.WriteLine("Requested URL: {0}", siteUrl);
-
+           
             //Execute in limited try/catch scope so new web is deleted if any exceptions are thrown
             try
             {
@@ -300,13 +314,14 @@ namespace CloudProvisioningWeb.Common
                 if (isSubSite)
                 {
                     //Additional owners are added to parent site Owners group because sub-sites inherit security
-                    string additionalOwnerEmail = GetProjectLeaderEmail(ctx, request);
+                    string additionalOwnerEmail = GetListItemUserFieldAsEmail(ctx, request, "ProjectLeader");
                     newWebUrl = CreateSubsite(ctx, parentWebUrl, siteUrl, baseTemplate, siteTitle, "", additionalOwnerEmail, provisioningTemplate);
                     
                 }
                 else
                 {
-                    newWebUrl = CreateSiteCollection(ctx, ctx.Web.Url, siteUrl, baseTemplate, siteTitle, "", provisioningTemplate);
+                    string siteCollectionOwnerEmail = GetListItemUserFieldAsEmail(ctx, request, "SiteCollectionOwner");
+                    newWebUrl = CreateSiteCollection(ctx, ctx.Web.Url, siteUrl, baseTemplate, siteTitle, "", siteCollectionOwnerEmail, provisioningTemplate);
                 }
 
                 //Update list item fields in list in source web
@@ -351,12 +366,12 @@ namespace CloudProvisioningWeb.Common
         }
 
 
-        private string GetProjectLeaderEmail(ClientContext ctx, ListItem request)
+        private string GetListItemUserFieldAsEmail(ClientContext ctx, ListItem listItem, string internalFieldName)
         {
-            ctx.Load(request, r => r["ProjectLeader"]);
+            ctx.Load(listItem, r => r[internalFieldName]);
             ctx.ExecuteQueryRetry();
 
-            FieldUserValue fuv = (FieldUserValue)request["ProjectLeader"];
+            FieldUserValue fuv = (FieldUserValue)listItem[internalFieldName];
 
             return fuv.Email;
         }
@@ -389,7 +404,7 @@ namespace CloudProvisioningWeb.Common
         }
 
 
-     
+
 
         /// <summary>
         /// Returns a ProvisioningTemplate object based on the XML file with the provided templateName in the library with the provided libraryName
@@ -422,10 +437,10 @@ namespace CloudProvisioningWeb.Common
             }
             //Load the template
             ProvisioningTemplate template = provider.GetTemplate(templateName);
-            
 
-            
-            
+
+
+
             return template;
         }
 
@@ -446,11 +461,11 @@ namespace CloudProvisioningWeb.Common
             var parentWebUri = new Uri(parentWebFullUrl);
             string realm = TokenHelper.GetRealmFromTargetUrl(parentWebUri);
             var token = TokenHelper.GetAppOnlyAccessToken(TokenHelper.SharePointPrincipal, parentWebUri.Authority, realm).AccessToken;
-            
+
             using (var parentWebCtx = TokenHelper.GetClientContextWithAccessToken(parentWebFullUrl.ToString(), token))
             {
                 var web = parentWebCtx.Web;
-                parentWebCtx.Load(web, w => w.Url, w=>w.Navigation);
+                parentWebCtx.Load(web, w => w.Url, w => w.Navigation);
                 parentWebCtx.ExecuteQuery();
 
 
@@ -470,13 +485,13 @@ namespace CloudProvisioningWeb.Common
                             }
                         );
 
-                       
-                        parentWebCtx.Load(newWeb, n => n.Url, n=>n.Title);
+
+                        parentWebCtx.Load(newWeb, n => n.Url, n => n.Title);
                         parentWebCtx.ExecuteQuery();
                         newWebUrl = newWeb.Url;
 
                         //Apply template
-                        if(provisioningTemplate !=null)
+                        if (provisioningTemplate != null)
                         {
                             //Delegate for logging
                             var applyingInfo = new ProvisioningTemplateApplyingInformation();
@@ -485,7 +500,7 @@ namespace CloudProvisioningWeb.Common
                                 Console.WriteLine("{0}/{1} Provisioning {2}", step, total, message);
                             };
 
-                            
+
                             //Apply template
                             newWeb.ApplyProvisioningTemplate(provisioningTemplate, applyingInfo);
 
@@ -510,7 +525,7 @@ namespace CloudProvisioningWeb.Common
                             }
 
                         }
-                        
+
                     }
 
                 }
@@ -560,7 +575,7 @@ namespace CloudProvisioningWeb.Common
 
         private static void ApplyPostTemplateModifications(string webFullUrl, SiteType siteType)
         {
-            
+
             var webUri = new Uri(webFullUrl);
             string realm = TokenHelper.GetRealmFromTargetUrl(webUri);
             var token = TokenHelper.GetAppOnlyAccessToken(TokenHelper.SharePointPrincipal, webUri.Authority, realm).AccessToken;
@@ -568,7 +583,7 @@ namespace CloudProvisioningWeb.Common
             using (var ctx = TokenHelper.GetClientContextWithAccessToken(webFullUrl.ToString(), token))
             {
 
-                var web = ctx.Web; 
+                var web = ctx.Web;
                 ctx.Load(web, w => w.Url, w => w.Title);
 
 
@@ -586,10 +601,10 @@ namespace CloudProvisioningWeb.Common
                 {
                     UpdateQuickLaunch(ctx, web, SiteType.Subsite);
                     UpdateHomePage(ctx, web, SiteType.Subsite);
-                    
+
                 }
             }
-            
+
         }
 
         private static void UpdateHomePage(ClientContext ctx, Web web, SiteType siteType)
@@ -677,7 +692,7 @@ namespace CloudProvisioningWeb.Common
 
         private static string GetSiteNotebookUrl(ClientContext ctx, Web web)
         {
-            ctx.Load(web, w => w.Url, w=>w.Title);
+            ctx.Load(web, w => w.Url, w => w.Title);
             ctx.ExecuteQueryRetry();
             return web.Url + "/SiteAssets/" + web.Title + " Notebook";
         }
@@ -756,7 +771,7 @@ namespace CloudProvisioningWeb.Common
         /// <param name="title"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        private static string CreateSiteCollection(ClientContext ctx, string hostWebUrl, string url, string template, string title, string description, ProvisioningTemplate provisioningTemplate = null)
+        private static string CreateSiteCollection(ClientContext ctx, string hostWebUrl, string url, string template, string title, string description, string ownerEmail, ProvisioningTemplate provisioningTemplate = null)
         {
             //get the base tenant admin urls
             var tenantStr = hostWebUrl.ToLower().Replace("-my", "").Substring(8);
@@ -764,7 +779,7 @@ namespace CloudProvisioningWeb.Common
 
             //get the current user to set as owner
             var currUser = ctx.Web.CurrentUser;
-            
+
             ctx.Load(currUser);
             ctx.ExecuteQuery();
 
@@ -779,7 +794,7 @@ namespace CloudProvisioningWeb.Common
                 var properties = new SiteCreationProperties()
                 {
                     Url = webUrl,
-                    Owner = "cnjohnson@psclistens.com", // currUser.Email,
+                    Owner = ownerEmail,
                     Title = title,
                     Template = template,
                     StorageMaximumLevel = 100,
@@ -824,6 +839,20 @@ namespace CloudProvisioningWeb.Common
                     {
                         Console.WriteLine("{0}/{1} Provisioning {2}", step, total, message);
                     };
+
+                    //Add owner to PSC Owners site group
+                    try
+                    {
+                        //Add owner to PSC Owners site group
+                        var pscOwners = provisioningTemplate.Security.SiteGroups.Where(p => p.Title == "PSC Owners").FirstOrDefault();
+                        var user = new OfficeDevPnP.Core.Framework.Provisioning.Model.User();
+                        user.Name = ownerEmail;
+                        pscOwners.Members.Add(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Could not add user {0} to PSC Owners group.  Exception: {1}", ownerEmail, ex.Message);
+                    }
 
                     newWeb.ApplyProvisioningTemplate(provisioningTemplate, applyingInfo);
 

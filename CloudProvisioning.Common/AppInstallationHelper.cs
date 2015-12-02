@@ -15,6 +15,7 @@ namespace CloudProvisioningWeb.Common
     public class AppInstallationHelper
     {
 
+        #region Private class constants
         /// <summary>
         /// Name used for the custom ribbon action installed for the Site Collections request list.
         /// </summary>
@@ -32,50 +33,16 @@ namespace CloudProvisioningWeb.Common
         private const string JsLinkActionName = "Provisioning_SiteCollectionLink";
 
         /// <summary>
-        /// The list used to request subsites will have this title
+        /// 
         /// </summary>
-        public static string SiteCollectionListTitle = "Site Collections";
+        private const string JsJQueryActionName = "Provisioning_JQueryLink";
+
+        #endregion
+
+        #region Private class variables
 
         /// <summary>
-        /// Description for the site collections list
-        /// </summary>
-        public static string SiteCollectionListDescription = "Manage requests for parent site collections";
-        
-        /// <summary>
-        /// The list used to request subsites will be created with this title
-        /// </summary>
-        public static string SubsiteListTitle = "Subsites";
-
-        /// <summary>
-        /// Description for the subsites list
-        /// </summary>
-        public static string SubsiteListDescription = "Manage requests for subsites of parent site collections.";
-        
-        /// <summary>
-        /// The library used to store site templates will be created with this title
-        /// </summary>
-        public static string SiteTemplateListTitle = "Site Templates";
-
-        /// <summary>
-        /// Description for the site templates library
-        /// </summary>
-        public static string SiteTemplateListDescription = "Manage site templates used to provision site collections and subsites.";
-
-        public static void SetListDetails(string siteCollectionListTitle, string siteCollectionListDescription,
-            string subsiteListTitle, string subsiteListDescription,
-            string siteTemplateListTitle, string siteTemplateListDescription)
-        {
-            SiteCollectionListTitle = siteCollectionListTitle;
-            SiteCollectionListDescription = siteCollectionListDescription;
-            SubsiteListTitle = subsiteListTitle;
-            SubsiteListDescription = subsiteListDescription;
-            SiteTemplateListTitle = siteTemplateListTitle;
-            SiteTemplateListDescription = siteTemplateListDescription;
-
-        }
-
-        /// <summary>
-        /// List fields for site provisioning lists
+        /// List fields for site provisioning lists, used by Site Collection and Subsites requests lists
         /// If desired, modify display names and descriptions to fit a specific use case
         /// </summary>
         private static class SharedListFields
@@ -107,16 +74,19 @@ namespace CloudProvisioningWeb.Common
                 + "</CHOICES><Default>New (not requested)</Default></Field>";
         }
 
-
+        /// <summary>
+        /// List fields for the Site Collection requests list only
+        /// If desired, modify display names and descriptions to fit a specific use case
+        /// </summary>
         private static class SiteCollectionListFields
         {
-            public static string SiteCollectionOwner = "<Field Name=\"SiteOwner\" DisplayName = \"Site Collection Owner\" Description=\"The administrator who should be set as the primary owner of this site collection.\""
-                + " Type=\"User\" ID=\"{d048f2ec-ef31-4a79-8ad2-3c729bccca29\" ShowField=\"ImnName\" UserSelectionMode=\"PeopleOnly\" Required=\"TRUE\"/>";
+            public static string SiteCollectionOwner = "<Field Name=\"SiteCollectionOwner\" DisplayName=\"Site Collection Owner\" Description=\"The administrator who should be set as the primary owner of this site collection.\""
+                + " Type=\"User\" ID=\"{d048f2ec-ef31-4a79-8ad2-3c729bccca29}\" ShowField=\"ImnName\" UserSelectionMode=\"PeopleOnly\" Required=\"TRUE\"/>";
 
         }
 
         /// <summary>
-        /// List fields for Project Subsites list
+        /// List fields for Project Subsites list only
         /// If desired, modify display names and descriptions to fit a specific use case
         /// </summary>
         private static class SubsiteListFields
@@ -132,8 +102,6 @@ namespace CloudProvisioningWeb.Common
                 + " Type=\"Lookup\" List=\"" + SiteCollectionListTitle + "\" ShowField=\"Title\" ID=\"{FBCB6409-11FB-48F0-A4EA-16171DE4D3F0}\" Required=\"TRUE\"/>";
 
         }
-
-        
 
         /// <summary>
         /// Library fields for Site Templates library
@@ -162,8 +130,259 @@ namespace CloudProvisioningWeb.Common
         }
 
 
+
+        #endregion
+
+        #region Public class variables - Set these prior to installation
         /// <summary>
-        /// 
+        /// The list used to request subsites will have this title
+        /// </summary>
+        public static string SiteCollectionListTitle = "Site Collections";
+
+        /// <summary>
+        /// Description for the site collections list
+        /// </summary>
+        public static string SiteCollectionListDescription = "Manage requests for parent site collections";
+        
+        /// <summary>
+        /// The list used to request subsites will be created with this title
+        /// </summary>
+        public static string SubsiteListTitle = "Subsites";
+
+        /// <summary>
+        /// Description for the subsites list
+        /// </summary>
+        public static string SubsiteListDescription = "Manage requests for subsites of parent site collections.";
+        
+        /// <summary>
+        /// The library used to store site templates will be created with this title
+        /// </summary>
+        public static string SiteTemplateListTitle = "Site Templates";
+
+        /// <summary>
+        /// Description for the site templates library
+        /// </summary>
+        public static string SiteTemplateListDescription = "Manage site templates used to provision site collections and subsites.";
+
+        #endregion
+
+        #region Private methods
+
+        /// <summary>
+        /// Retrieve the CustomAction XML node from the file in the specified directory
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private static XElement GetCustomActionXmlNode(string directory, string fileName)
+        {
+
+            //Source: https://msdn.microsoft.com/en-us/library/office/dn904536.aspx
+            // The next line of code causes an exception to be thrown for files larger than 2 MB.
+            string appDomain = HttpRuntime.AppDomainAppPath;
+
+            string pathToFile = directory + "\\" + fileName;
+
+            string fileUrl = Path.Combine(appDomain, pathToFile);
+
+
+            XNamespace ns = "http://schemas.microsoft.com/sharepoint/";
+
+            var xdoc = XDocument.Load(fileUrl);
+            var customActionNode = xdoc.Element(ns + "Elements").Element(ns + "CustomAction");
+            return customActionNode;
+        }
+
+        /// <summary>
+        /// Adds a ScriptLink Custom Action, with the specified script file from the specified directory, to the current context web
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="directory"></param>
+        /// <param name="scriptFileName"></param>
+        private static void AddCustomScriptAction(ClientContext ctx, string directory, string scriptFileName, string customActionName)
+        {
+
+            Web web = ctx.Web;
+
+            List assetLibrary = web.GetListByTitle("Site Assets");
+            ctx.Load(assetLibrary, a => a.RootFolder);
+
+            //Source: https://msdn.microsoft.com/en-us/library/office/dn904536.aspx
+            // The next line of code causes an exception to be thrown for files larger than 2 MB.
+            string appDomain = HttpRuntime.AppDomainAppPath;
+
+            string pathToFile = directory + "\\" + scriptFileName;
+
+            string fileUrl = Path.Combine(appDomain, pathToFile);
+
+
+            // Use CSOM to uplaod the file in
+            FileCreationInformation newFile = new FileCreationInformation();
+            newFile.Content = System.IO.File.ReadAllBytes(fileUrl);
+            newFile.Url = scriptFileName;
+            newFile.Overwrite = true;
+            Microsoft.SharePoint.Client.File uploadFile = assetLibrary.RootFolder.Files.Add(newFile);
+            ctx.Load(uploadFile);
+            ctx.ExecuteQuery();
+
+            // Clean up existing actions that we may have deployed
+
+            var existingActions = web.UserCustomActions;
+            ctx.Load(existingActions);
+
+            // Execute our uploads and initialzie the existingActions collection
+            ctx.ExecuteQuery();
+
+
+            //Clean up existing user action (make sure we don't duplicate
+            var actions = existingActions.ToArray();
+            foreach (var existingAction in actions)
+            {
+                if (existingAction.Name.Equals(customActionName, StringComparison.InvariantCultureIgnoreCase))
+                    existingAction.DeleteObject();
+            }
+            ctx.ExecuteQuery();
+
+            string linkUrl = assetLibrary.RootFolder.ServerRelativeUrl + "/" + scriptFileName;
+
+            StringBuilder scripts = new StringBuilder(@"
+                var headID = document.getElementsByTagName('head')[0]; 
+                var");
+
+            scripts.AppendFormat(@"
+                newScript = document.createElement('script');
+                newScript.type = 'text/javascript';
+                newScript.src = '{0}';
+                headID.appendChild(newScript);", linkUrl);
+            string scriptBlock = scripts.ToString();
+
+            //Build custom JS link
+            string scriptLocation = "ScriptLink";
+            int scriptSequence = 100;
+
+            //Site
+            UserCustomAction jsLink = web.UserCustomActions.Add();
+            jsLink.Location = scriptLocation;
+            jsLink.Sequence = scriptSequence;
+            jsLink.ScriptBlock = scriptBlock;
+
+            jsLink.Name = customActionName;
+
+            jsLink.Update();
+            ctx.ExecuteQuery();
+
+        }
+
+        /// <summary>
+        /// Adds the Ribbon Action in the specified XML document, in the specified directory, to the list with the specified title.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="directory"></param>
+        /// <param name="xmlDefinitionFileName"></param>
+        /// <param name="listTitle"></param>
+        /// <param name="ribbonActionName"></param>
+        private static void AddCustomRibbonActionToListDefaultContentType(ClientContext ctx, string directory, string xmlDefinitionFileName, string listTitle, string ribbonActionName)
+        {
+            Web web = ctx.Web;
+
+            #region Get list default content type ID
+            List list = web.GetListByTitle(listTitle);
+            ctx.Load(list, p => p.Id, p => p.ContentTypes);
+            ctx.ExecuteQuery();
+
+            var contentTypeId = list.ContentTypes[0].StringId;
+
+            #endregion
+
+            #region Ribbon custom action
+            ctx.Load(web, w => w.UserCustomActions);
+
+            XNamespace ns = "http://schemas.microsoft.com/sharepoint/";
+
+            //Get XML element from single XML definition that we will use to create two identical custom actions
+            var customActionNode = GetCustomActionXmlNode(directory, xmlDefinitionFileName);
+            var commandUIExtensionNode = customActionNode.Element(ns + "CommandUIExtension");
+            var xmlContent = commandUIExtensionNode.ToString();
+            var location = customActionNode.Attribute("Location").Value;
+
+            var registrationTypeString = customActionNode.Attribute("RegistrationType").Value;
+            var registrationType = (UserCustomActionRegistrationType)Enum.Parse(typeof(UserCustomActionRegistrationType), registrationTypeString);
+
+            var sequence = 1000;
+            if (customActionNode.Attribute(ns + "Sequence") != null)
+            {
+                sequence = Convert.ToInt32(customActionNode.Attribute(ns + "Sequence").Value);
+            }
+
+
+            var existingActions = web.UserCustomActions;
+            ctx.Load(existingActions);
+
+            // Execute our uploads and initialize the existingActions collection
+            ctx.ExecuteQuery();
+
+
+            //Clean up existing user action (make sure we don't duplicate
+            var actions = existingActions.ToArray();
+
+            foreach (var existingAction in actions)
+            {
+                if (existingAction.Name.Equals(ribbonActionName, StringComparison.InvariantCultureIgnoreCase))
+                    existingAction.DeleteObject();
+            }
+            ctx.ExecuteQuery();
+
+
+            //Add custom action
+            var ribbonAction = ctx.Web.UserCustomActions.Add();
+            ribbonAction.RegistrationId = contentTypeId; // registrationId-- use the content type ID
+            ribbonAction.Name = ribbonActionName;
+
+
+            ribbonAction.Location = location;
+            ribbonAction.CommandUIExtension = xmlContent; // CommandUIExtension xml
+            ribbonAction.RegistrationType = registrationType;
+            ribbonAction.Sequence = sequence;
+
+            ribbonAction.Update();
+            ctx.Load(ribbonAction);
+            ctx.ExecuteQuery();
+
+
+            #endregion
+        }
+
+        #endregion
+
+       #region Public methods
+
+        #region Installation Utilities
+
+        /// <summary>
+        /// Specify the site collection, subsite and template list titles and descriptions for a new app installation.  If you do not call this method, defaults will be used.
+        /// </summary>
+        /// <param name="siteCollectionListTitle"></param>
+        /// <param name="siteCollectionListDescription"></param>
+        /// <param name="subsiteListTitle"></param>
+        /// <param name="subsiteListDescription"></param>
+        /// <param name="siteTemplateListTitle"></param>
+        /// <param name="siteTemplateListDescription"></param>
+        public static void SetListDetails(string siteCollectionListTitle, string siteCollectionListDescription,
+            string subsiteListTitle, string subsiteListDescription,
+            string siteTemplateListTitle, string siteTemplateListDescription)
+        {
+            SiteCollectionListTitle = siteCollectionListTitle;
+            SiteCollectionListDescription = siteCollectionListDescription;
+            SubsiteListTitle = subsiteListTitle;
+            SubsiteListDescription = subsiteListDescription;
+            SiteTemplateListTitle = siteTemplateListTitle;
+            SiteTemplateListDescription = siteTemplateListDescription;
+
+        }
+
+
+        /// <summary>
+        /// Uploads the specified file to the library with the specified title in the host web, and sets the new list item's field values if possible.
         /// </summary>
         /// <param name="clientContext"></param>
         /// <param name="libraryTitle"></param>
@@ -192,7 +411,7 @@ namespace CloudProvisioningWeb.Common
             // Add file to the library.
             try
             {
-                
+
                 Microsoft.SharePoint.Client.File uploadFile = library.RootFolder.Files.Add(newFile);
                 clientContext.Load(uploadFile);
 
@@ -221,7 +440,49 @@ namespace CloudProvisioningWeb.Common
         }
 
         /// <summary>
-        /// Deletes the lists used by this app.  Called from AppUninstalling
+        /// Checks if the 3 required lists exist on the host web
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <returns></returns>
+        public static bool RequiredListsExist(ClientContext ctx)
+        {
+            return ctx.Web.ListExists(SiteTemplateListTitle)
+                && ctx.Web.ListExists(SiteCollectionListTitle)
+                && ctx.Web.ListExists(SubsiteListTitle);
+        }
+
+        /// <summary>
+        /// Adds all custom actions to the current context web using the specified files in the specified directory.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="directory"></param>
+        /// <param name="scriptFileName"></param>
+        /// <param name="siteCollectionListTitle"></param>
+        /// <param name="siteCollectionRibbonActionFileName"></param>
+        /// <param name="subsiteListTitle"></param>
+        /// <param name="subsiteRibbonActionFileName"></param>
+        public static void AddCustomActions(ClientContext ctx, string directory, string scriptFileName, string siteCollectionListTitle, string siteCollectionRibbonActionFileName,
+            string subsiteListTitle, string subsiteRibbonActionFileName, string jQueryScriptFileName="jquery-1.11.2.min.js")
+        {
+            //jQuery
+            //AddCustomScriptAction(ctx, directory, jQueryScriptFileName, JsJQueryActionName);
+
+            //Script
+            AddCustomScriptAction(ctx, directory, scriptFileName, JsLinkActionName);
+
+            //Site Collection List - Ribbon
+            AddCustomRibbonActionToListDefaultContentType(ctx, directory, siteCollectionRibbonActionFileName, siteCollectionListTitle, SiteCollRibbonActionName);
+
+            //Subsites List - Ribbon
+            AddCustomRibbonActionToListDefaultContentType(ctx, directory, subsiteRibbonActionFileName, subsiteListTitle, SubsiteRibbonActionName);
+
+        }
+
+        #endregion
+
+        #region Uninstallation Utilities
+        /// <summary>
+        /// Deletes the lists used by this app.  To be called from AppUninstalling
         /// </summary>
         /// <param name="clientContext"></param>
         public static void DeleteLists(ClientContext clientContext)
@@ -280,9 +541,44 @@ namespace CloudProvisioningWeb.Common
             }
         }
 
+        /// <summary>
+        /// Remove the custom actions from the site; to be called on AppUninstalling
+        /// </summary>
+        /// <param name="ctx"></param>
+        public static void RemoveCustomActions(ClientContext ctx)
+        {
+            Web web = ctx.Web;
+            ctx.Load(web, w => w.UserCustomActions);
+            ctx.ExecuteQuery();
+
+            var existingActions = web.UserCustomActions;
+            ctx.Load(existingActions);
+
+            // Execute our uploads and initialzie the existingActions collection
+            ctx.ExecuteQuery();
+
+
+            //Clean up existing user action (make sure we don't duplicate
+            var actions = existingActions.ToArray();
+
+            // Clean up existing actions that we may have deployed
+            foreach (var existingAction in actions)
+            {
+                if (existingAction.Name.Equals(SiteCollRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
+                    || existingAction.Name.Equals(SubsiteRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
+                    || existingAction.Name.Equals(JsLinkActionName, StringComparison.InvariantCultureIgnoreCase))
+                    existingAction.DeleteObject();
+            }
+            ctx.ExecuteQuery();
+
+        }
+
+        #endregion
+
+        #region List Creation
 
         /// <summary>
-        /// Creates a library for storing site template XML files.
+        /// Create the library for storing site template XML files.
         /// </summary>
         /// <param name="ctx"></param>
         public static void CreateTemplateLibrary(ClientContext ctx, string iconUrl = "")
@@ -298,7 +594,7 @@ namespace CloudProvisioningWeb.Common
                     {
 
                         templateLibrary = web.CreateList(ListTemplateType.DocumentLibrary, SiteTemplateListTitle, false);
-                       
+
                         //templateLibrary.Hidden = true;
                         //templateLibrary.Update();
                         ctx.ExecuteQuery();
@@ -329,7 +625,7 @@ namespace CloudProvisioningWeb.Common
                         }
 
                         ctx.ExecuteQuery();
-                        
+
                         //Add all fields to be created to this collection
                         StringCollection fields = new StringCollection{
                         SiteTemplateLibraryFields.Description,
@@ -358,7 +654,7 @@ namespace CloudProvisioningWeb.Common
                         templateLibrary.DefaultView.ViewFields.Add("Title");
                         templateLibrary.DefaultView.ViewFields.Add("Site Description");
                         templateLibrary.DefaultView.ViewFields.Add("Base Template");
-                        
+
                         templateLibrary.DefaultView.Update();
 
                         templateLibrary.Update();
@@ -379,7 +675,7 @@ namespace CloudProvisioningWeb.Common
 
 
         /// <summary>
-        /// Creates a list for storing site requests
+        /// Create the list for storing site collection requests
         /// </summary>
         /// <param name="ctx"></param>
         public static void CreateSiteCollectionList(ClientContext ctx, string iconUrl = "")
@@ -492,7 +788,7 @@ namespace CloudProvisioningWeb.Common
 
 
                         //List default view
-                        ctx.Load(siteCollectionList, l => l.DefaultView, l=>l.Fields, l=>l.ContentTypes);
+                        ctx.Load(siteCollectionList, l => l.DefaultView, l => l.Fields, l => l.ContentTypes);
                         ctx.ExecuteQuery();
 
                         siteCollectionList.DefaultView.ViewFields.Add("Abbreviation");
@@ -503,7 +799,7 @@ namespace CloudProvisioningWeb.Common
                         siteCollectionList.DefaultView.ViewFields.Add("Error");
                         siteCollectionList.DefaultView.Update();
 
-                        
+
 
                         ContentType ct = siteCollectionList.ContentTypes[0];
                         siteCollectionList.ContentTypesEnabled = true;
@@ -513,7 +809,7 @@ namespace CloudProvisioningWeb.Common
                         siteCollectionList.Update();
                         ctx.ExecuteQueryRetry();
 
-                        
+
                     }
                     catch (Exception ex)
                     {
@@ -530,20 +826,9 @@ namespace CloudProvisioningWeb.Common
 
         }
 
-        /// <summary>
-        /// Checks if the 3 required lists exist on the host web
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <returns></returns>
-        public static bool RequiredListsExist(ClientContext ctx)
-        {
-            return ctx.Web.ListExists(SiteTemplateListTitle)
-                && ctx.Web.ListExists(SiteCollectionListTitle)
-                && ctx.Web.ListExists(SubsiteListTitle);
-        }
 
         /// <summary>
-        /// Creates a list for storing site requests
+        /// Creates the list for storing subsite requests
         /// </summary>
         /// <param name="ctx"></param>
         public static void CreateSubsiteList(ClientContext ctx, string iconUrl = "")
@@ -623,7 +908,7 @@ namespace CloudProvisioningWeb.Common
                             try
                             {
                                 var siteTemplatesLibrary = web.Lists.GetByTitle(SiteTemplateListTitle);
-                                ctx.Load(siteTemplatesLibrary, s=> s.Id);
+                                ctx.Load(siteTemplatesLibrary, s => s.Id);
                                 ctx.ExecuteQuery();
 
                                 var id = siteTemplatesLibrary.Id;
@@ -649,7 +934,7 @@ namespace CloudProvisioningWeb.Common
                             try
                             {
                                 var clientSitesLibrary = web.Lists.GetByTitle(SiteCollectionListTitle);
-                                ctx.Load(clientSitesLibrary, c=> c.Id);
+                                ctx.Load(clientSitesLibrary, c => c.Id);
                                 ctx.ExecuteQuery();
                                 var id = clientSitesLibrary.Id;
 
@@ -676,7 +961,7 @@ namespace CloudProvisioningWeb.Common
 
 
                         //List default view
-                        ctx.Load(subsiteList, l => l.DefaultView, l => l.Fields, l=>l.ContentTypes);
+                        ctx.Load(subsiteList, l => l.DefaultView, l => l.Fields, l => l.ContentTypes);
 
                         subsiteList.DefaultView.ViewFields.Add("Abbreviation");
                         subsiteList.DefaultView.ViewFields.Add("Client Site");
@@ -699,8 +984,8 @@ namespace CloudProvisioningWeb.Common
                         subsiteList.Update();
                         ctx.ExecuteQuery();
 
-                       
-                      
+
+
                     }
                     catch (Exception ex)
                     {
@@ -720,224 +1005,10 @@ namespace CloudProvisioningWeb.Common
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="directory"></param>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        private static XElement GetCustomActionXmlNode(string directory, string fileName)
-        {
+        #endregion
 
-            //Source: https://msdn.microsoft.com/en-us/library/office/dn904536.aspx
-            // The next line of code causes an exception to be thrown for files larger than 2 MB.
-            string appDomain = HttpRuntime.AppDomainAppPath;
+        #endregion 
 
-            string pathToFile = directory + "\\" + fileName;
-
-            string fileUrl = Path.Combine(appDomain, pathToFile);
-  
-
-            XNamespace ns = "http://schemas.microsoft.com/sharepoint/";
-
-            var xdoc = XDocument.Load(fileUrl);
-            var customActionNode = xdoc.Element(ns + "Elements").Element(ns + "CustomAction");
-            return customActionNode;
-        }
-
-        public static void RemoveCustomActions(ClientContext ctx)
-        {
-            Web web = ctx.Web;
-            ctx.Load(web, w=>w.UserCustomActions);
-            ctx.ExecuteQuery();
-
-            var existingActions = web.UserCustomActions;
-            ctx.Load(existingActions);
-
-            // Execute our uploads and initialzie the existingActions collection
-            ctx.ExecuteQuery();
-
-
-            //Clean up existing user action (make sure we don't duplicate
-            var actions = existingActions.ToArray();
-
-            // Clean up existing actions that we may have deployed
-            foreach (var existingAction in actions)
-            {
-                if (existingAction.Name.Equals(SiteCollRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
-                    || existingAction.Name.Equals(SubsiteRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
-                    || existingAction.Name.Equals(JsLinkActionName, StringComparison.InvariantCultureIgnoreCase))
-                    existingAction.DeleteObject();
-            }
-            ctx.ExecuteQuery();
         
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ctx"></param>
-        /// <param name="web"></param>
-        /// <param name="directory"></param>
-        /// <param name="scriptFileName"></param>
-        /// <param name="xmlDefinitionFileName"></param>
-        /// <param name="siteCollectionListTitle"></param>
-        /// <param name="subsiteListTitle"></param>
-        public static void AddCustomRibbonAction(ClientContext ctx, string directory, string scriptFileName, string xmlDefinitionFileName, string siteCollectionListTitle, string subsiteListTitle)
-        {
-            Web web = ctx.Web;
-
-            #region Get list content type IDs
-            List siteCollectionList = web.GetListByTitle(siteCollectionListTitle);
-            ctx.Load(siteCollectionList, p => p.Id, p => p.ContentTypes);
-            ctx.ExecuteQuery();
-
-            var siteCollContentTypeId = siteCollectionList.ContentTypes[0].StringId;
-
-            List subsiteList = web.GetListByTitle(subsiteListTitle);
-            ctx.Load(subsiteList, p => p.Id, p => p.ContentTypes);
-            ctx.ExecuteQuery();
-
-            var subsiteContentTypeId = subsiteList.ContentTypes[0].StringId;
-
-            #endregion
-
-            #region Prerequisite script custom action
-            List assetLibrary = web.GetListByTitle("Site Assets");
-            ctx.Load(assetLibrary, a => a.RootFolder);
-
-
-            //Source: https://msdn.microsoft.com/en-us/library/office/dn904536.aspx
-            // The next line of code causes an exception to be thrown for files larger than 2 MB.
-            string appDomain = HttpRuntime.AppDomainAppPath;
-
-            string pathToFile = directory + "\\" + scriptFileName;
-            
-            string fileUrl = Path.Combine(appDomain, pathToFile);
-  
-
-            // Use CSOM to uplaod the file in
-            FileCreationInformation newFile = new FileCreationInformation();
-            newFile.Content = System.IO.File.ReadAllBytes(fileUrl);
-            newFile.Url = scriptFileName;
-            newFile.Overwrite = true;
-            Microsoft.SharePoint.Client.File uploadFile = assetLibrary.RootFolder.Files.Add(newFile);
-            ctx.Load(uploadFile);
-            ctx.ExecuteQuery();
-
-            // Clean up existing actions that we may have deployed
-
-            var existingActions = web.UserCustomActions;
-            ctx.Load(existingActions);
-
-            // Execute our uploads and initialzie the existingActions collection
-            ctx.ExecuteQuery();
-
-
-            //Clean up existing user action (make sure we don't duplicate
-            var actions = existingActions.ToArray();
-            foreach (var existingAction in actions)
-            {
-                if (existingAction.Name.Equals(JsLinkActionName, StringComparison.InvariantCultureIgnoreCase))
-                    existingAction.DeleteObject();
-            }
-            ctx.ExecuteQuery();
-
-            string linkUrl = assetLibrary.RootFolder.ServerRelativeUrl + "/" + scriptFileName;
-
-            StringBuilder scripts = new StringBuilder(@"
-                var headID = document.getElementsByTagName('head')[0]; 
-                var");
-
-            scripts.AppendFormat(@"
-                newScript = document.createElement('script');
-                newScript.type = 'text/javascript';
-                newScript.src = '{0}';
-                headID.appendChild(newScript);", linkUrl);
-            string scriptBlock = scripts.ToString();
-
-            //Build custom JS link
-            string scriptLocation = "ScriptLink";
-            int scriptSequence = 100;
-            //string scriptBlock = @"document.write('<script type=""text/JavaScript"" src=""" + assetLibrary.RootFolder.ServerRelativeUrl + "/" + scriptFileName + @""" />');";
-
-            //Site
-            UserCustomAction jsLink = web.UserCustomActions.Add();
-            jsLink.Location = scriptLocation;
-            jsLink.Sequence = scriptSequence;
-            jsLink.ScriptBlock = scriptBlock;
-
-            jsLink.Name = JsLinkActionName;
-
-            jsLink.Update();
-            ctx.ExecuteQuery();
-
-
-            #endregion
-
-            #region Ribbon custom action
-            ctx.Load(web, w => w.UserCustomActions);
-
-            XNamespace ns = "http://schemas.microsoft.com/sharepoint/";
-
-            //Get XML element from single XML definition that we will use to create two identical custom actions
-            var customActionNode = GetCustomActionXmlNode(directory, xmlDefinitionFileName);
-            var commandUIExtensionNode = customActionNode.Element(ns + "CommandUIExtension");
-            var xmlContent = commandUIExtensionNode.ToString();
-            var location = customActionNode.Attribute("Location").Value;
-
-            var registrationTypeString = customActionNode.Attribute("RegistrationType").Value;
-            var registrationType = (UserCustomActionRegistrationType)Enum.Parse(typeof(UserCustomActionRegistrationType), registrationTypeString);
-
-            var sequence = 1000;
-            if (customActionNode.Attribute(ns + "Sequence") != null)
-            {
-                sequence = Convert.ToInt32(customActionNode.Attribute(ns + "Sequence").Value);
-            }
-
-
-            // Clean up existing actions that we may have deployed
-            foreach (var existingAction in actions)
-            {
-                if (existingAction.Name.Equals(SiteCollRibbonActionName, StringComparison.InvariantCultureIgnoreCase)
-                    || existingAction.Name.Equals(SubsiteRibbonActionName, StringComparison.InvariantCultureIgnoreCase))
-                    existingAction.DeleteObject();
-            }
-            ctx.ExecuteQuery();
-
-
-            //Site collection list ribbon
-            var siteCollRibbonAction = ctx.Web.UserCustomActions.Add();
-            siteCollRibbonAction.RegistrationId = siteCollContentTypeId; // registrationId-- use the content type ID
-            siteCollRibbonAction.Name = SiteCollRibbonActionName;
-
-
-            siteCollRibbonAction.Location = location;
-            siteCollRibbonAction.CommandUIExtension = xmlContent; // CommandUIExtension xml
-            siteCollRibbonAction.RegistrationType = registrationType;
-            siteCollRibbonAction.Sequence = sequence;
-
-            siteCollRibbonAction.Update();
-            ctx.Load(siteCollRibbonAction);
-            ctx.ExecuteQuery();
-
-            //Subsite list ribbon
-            var subsiteRibbonAction = ctx.Web.UserCustomActions.Add();
-            subsiteRibbonAction.RegistrationId = subsiteContentTypeId; // registrationId-- use the content type ID
-            subsiteRibbonAction.Name = SubsiteRibbonActionName;
-
-
-            subsiteRibbonAction.Location = location;
-            subsiteRibbonAction.CommandUIExtension = xmlContent; // CommandUIExtension xml
-            subsiteRibbonAction.RegistrationType = registrationType;
-            subsiteRibbonAction.Sequence = sequence;
-
-            subsiteRibbonAction.Update();
-            ctx.Load(subsiteRibbonAction);
-            ctx.ExecuteQuery();
-
-            #endregion
-        }
-
     }
 }
